@@ -108,6 +108,42 @@ body{
   .tile{grid-template-columns:52px 1fr 52px;font-size:16px;min-height:64px}
   .tile .icon{width:34px;height:34px}
 }
+
+/* TEST v25: ozdobne kreski po lewej stronie */
+body{
+  background:
+    linear-gradient(180deg,#1d2832 0%,#24313d 100%);
+}
+.box{
+  position:relative;
+  overflow:hidden;
+  padding-top:30px;
+  padding-left:38px;
+}
+.box::before{
+  content:"";
+  position:absolute;
+  left:0; top:0; bottom:0;
+  width:92px;
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.9),rgba(248,249,250,.65)),
+    linear-gradient(145deg, rgba(223,227,231,.95) 0 18%, transparent 18% 28%, rgba(240,242,244,.95) 28% 44%, transparent 44% 54%, rgba(228,232,236,.95) 54% 68%, transparent 68% 78%, rgba(243,245,247,.95) 78% 100%);
+  clip-path:polygon(0 0,100% 0,58% 100%,0 100%);
+}
+.box::after{
+  content:"";
+  position:absolute;
+  left:66px; top:0; bottom:0;
+  width:1px;
+  background:linear-gradient(180deg,rgba(0,0,0,.08),rgba(0,0,0,0));
+}
+.brand,.muted,.tile{position:relative;z-index:1}
+@media(max-width:420px){
+  .box{padding-left:30px}
+  .box::before{width:76px}
+  .box::after{left:55px}
+}
+
 </style>
 </head>
 <body>
