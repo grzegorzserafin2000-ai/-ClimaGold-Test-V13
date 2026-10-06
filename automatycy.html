@@ -231,6 +231,8 @@
 /* FINAL v27: 2 pracowników domyślnie + dodawanie do 4 + sekcje centrali dzielonej */
 /* FINAL v28: pomarańczowy Dodaj pracownika + sekcja pod typem */
 /* FINAL v29: sekcja przeniesiona nad nagłówek pracowników */
+/* FINAL v30: do 10 pracowników + możliwość usunięcia każdego */
+/* FINAL v31: sekcja centrali dzielonej ma rozmiar zwykłego pola i złote wyróżnienie */
 .statscharts{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
 .statscharts .wide{grid-column:1/-1}
 .chartlegend{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin:2px 0 12px}
@@ -519,6 +521,33 @@ th{background:#f6f8f9}
 #sectionField label{font-weight:700}
 #sectionField select{width:100%;max-width:none}
 
+
+/* FINAL v31: sekcja centrali dzielonej jak zwykłe pole + złote wyróżnienie */
+#sectionField{
+  width:calc((100% - 20px)/3);
+  margin:4px 0 12px;
+  padding:10px;
+  background:#fff4c7;
+  border:1px solid #d9ad45;
+  border-radius:10px;
+  box-shadow:0 2px 8px rgba(217,173,69,.12);
+}
+#sectionField label{
+  font-weight:700;
+  color:#5d4611;
+}
+#sectionField select{
+  width:100%;
+  max-width:none;
+  background:#fffdf6;
+  border:1px solid #d9ad45;
+}
+@media(max-width:800px){
+  #sectionField{
+    width:100%;
+  }
+}
+
 </style></head><body>
 <div id="login" class="login"><div class="box"><button type="button" class="btn secondary" onclick="location.href='./index.html'" style="width:100%;margin:0 0 14px">← Wróć do wyboru działu</button><div class="brand"><span class="brandmark" aria-hidden="true"><i></i><i></i><i></i></span><span class="brandtext"><span class="clima">Clima</span><span class="gold">Gold</span></span></div><h2>Automatycy</h2><div class="hint">Wspólna baza online</div><div class="field"><label>Login</label><input id="lu" value="brygadzista" autocomplete="username"></div><div class="field"><label>Hasło</label><input id="lp" type="password" autocomplete="current-password"></div><button class="btn" onclick="doLogin()">Zaloguj</button><div id="le" class="error"></div></div></div>
 <div id="app" class="app"><aside class="side"><div class="brand"><span class="brandmark" aria-hidden="true"><i></i><i></i><i></i></span><span class="brandtext"><span class="clima">Clima</span><span class="gold">Gold</span></span></div><span class="hall">AUTOMATYCY</span><div class="nav">
@@ -596,7 +625,7 @@ th{background:#f6f8f9}
 <div id="modal" class="modal"><div class="dialog"><h2>Wpis ewidencji</h2><input id="eid" type="hidden"><div class="quickwork"><button type="button" class="btn" onclick="quickStartWork()"><span class="qicon play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5.2v13.6c0 .9 1 1.4 1.7.9l9.6-6.8c.7-.5.7-1.5 0-2L9.7 4.1C9 3.6 8 4.1 8 5.2Z"/></svg></span><span>START PRACY</span></button><button type="button" class="btn secondary" onclick="quickEndWork()"><span class="qicon stop" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="1.8"/></svg></span><span>KONIEC PRACY</span></button></div><div class="grid"><div class="field"><label>Nr / oznaczenie</label><input id="no"></div><div class="field"><label>Data rozpoczęcia</label><input id="sd" type="date"></div><div class="field"><label>Data zakończenia</label><input id="ed" type="date"></div><div class="field"><label>Typ urządzenia</label><select id="dt" onchange="updateSectionVisibility()"></select></div><div class="field"><label>Godzina rozpoczęcia</label><input id="stt" type="time"></div><div class="field"><label>Godzina zakończenia</label><input id="ett" type="time"></div></div><div class="field" id="sectionField" style="display:none"><label>Sekcja centrali dzielonej</label><select id="section"></select></div><h3>Pracownicy, system pracy i korekty czasu</h3><div class="muted">Każdy pracownik ma własny system pracy na każdy dzień wpisu.</div><div id="empsel"></div><div class="toolbar empaddbar"><button id="addEmpBtn" type="button" class="btn" onclick="addEmployeeBlock()">+ Dodaj pracownika</button></div><div class="grid"><div class="field"><label>Kolor</label><select id="markcolor"><option value="">Bez koloru</option><option value="yellow">Żółty</option><option value="green">Zielony</option><option value="blue">Niebieski</option><option value="red">Czerwony</option><option value="orange">Pomarańczowy</option><option value="purple">Fioletowy</option></select></div><div class="field" style="grid-column:span 2"><label>Uwagi</label><textarea id="notes"></textarea></div></div><div class="toolbar"><button class="btn" onclick="saveEntry()">Zapisz</button><button class="btn secondary" onclick="closeEntry()">Anuluj</button></div></div></div>
 <script>
 
-var HALL='AUTO',D=null,ME=null,TOKEN_KEY='cg_'+HALL+'_token',DEFAULT_EMP=HALL==='AUTO'?1:2,MAX_EMP=HALL==='AUTO'?1:4,SECTION_PREFIX='__CG_SECTION__:';
+var HALL='AUTO',D=null,ME=null,TOKEN_KEY='cg_'+HALL+'_token',DEFAULT_EMP=HALL==='AUTO'?1:2,MAX_EMP=HALL==='AUTO'?1:10,SECTION_PREFIX='__CG_SECTION__:';
 function $(x){return document.getElementById(x)}
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(m){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]})}
 function hallName(){return HALL==='AUTO'?'Automatycy':HALL==='M1'?'Montaż H1':HALL==='M2'?'Montaż H2':HALL==='H1'?'Elektrycy H1':HALL==='H2'?'Elektrycy H2':HALL}
@@ -662,7 +691,7 @@ function updateSectionVisibility(value){
 function employeeBlockHtml(i,e,cs){
   e=e||{employees:[]};cs=cs||[];
   var lab=MAX_EMP===1?'Pracownik':'Pracownik '+(i+1);
-  var remove=(HALL!=='AUTO'&&i>=DEFAULT_EMP)?'<button type="button" class="btn danger empremove" onclick="removeEmployeeBlock(this)">Usuń tego pracownika</button>':'';
+  var remove='<button type="button" class="btn danger empremove" onclick="removeEmployeeBlock(this)">Usuń tego pracownika</button>';
   return'<div class="empblock" data-slot="'+i+'"><div class="empgrid"><div class="field"><label>'+lab+'</label><select class="emp" onchange="employeeChanged(this)">'+opts(D.settings.employees,(e.employees||[])[i]||'')+'</select></div><input class="corr" type="hidden" value="'+(cs[i]||0)+'"></div><div class="participation"><div class="partbuttons"><button type="button" class="btn secondary" onclick="toggleParticipation(this,\'from\')">Dołącza do pracy</button><button type="button" class="btn secondary" onclick="toggleParticipation(this,\'to\')">Kończy pracę</button></div><div class="partfields frompart"><b class="partlabel">Dołącza</b><input class="pfromd" type="date" onchange="updatePartStatus(this.closest(\'.empblock\'))"><input class="pfromt" type="time" onchange="updatePartStatus(this.closest(\'.empblock\'))"><button type="button" class="btn secondary" onclick="clearParticipation(this,\'from\')">Usuń</button></div><div class="partfields topart"><b class="partlabel">Kończy</b><input class="ptod" type="date" onchange="updatePartStatus(this.closest(\'.empblock\'))"><input class="ptot" type="time" onchange="updatePartStatus(this.closest(\'.empblock\'))"><button type="button" class="btn secondary" onclick="clearParticipation(this,\'to\')">Usuń</button></div><div class="muted partstatus">Bez zmian = pracuje od początku do końca.</div></div><div class="pausebox"><div class="empname">Przerwy w pracy</div><div class="pausebuttons"><button type="button" class="btn secondary" onclick="pauseWork(this)">Wstrzymał pracę</button><button type="button" class="btn secondary" onclick="resumeWork(this)">Rozpoczął pracę</button></div><div class="pauselist"></div><div class="muted pausestatus">Brak przerw.</div></div><div class="empname">System pracy tego pracownika</div><div class="empsystems"></div>'+remove+'</div>'
 }
 function renumberEmployeeBlocks(){
@@ -671,17 +700,16 @@ function renumberEmployeeBlocks(){
     var lab=block.querySelector('.empgrid label');
     if(lab)lab.textContent=MAX_EMP===1?'Pracownik':'Pracownik '+(i+1);
     var rm=block.querySelector('.empremove');
-    if(rm)rm.style.display=i>=DEFAULT_EMP?'inline-block':'none'
+    if(rm)rm.style.display='inline-block'
   });
   updateAddEmployeeButton()
 }
 function updateAddEmployeeButton(){
   var b=$('addEmpBtn');if(!b)return;
   var n=document.querySelectorAll('.empblock').length;
-  b.style.display=(HALL!=='AUTO'&&n<MAX_EMP)?'inline-block':'none'
+  b.style.display=n<MAX_EMP?'inline-block':'none'
 }
 function addEmployeeBlock(){
-  if(HALL==='AUTO')return;
   var n=document.querySelectorAll('.empblock').length;if(n>=MAX_EMP)return;
   $('empsel').insertAdjacentHTML('beforeend',employeeBlockHtml(n,{employees:[]},[]));
   var block=$('empsel').lastElementChild;
@@ -691,8 +719,6 @@ function addEmployeeBlock(){
   renumberEmployeeBlocks()
 }
 function removeEmployeeBlock(btn){
-  var blocks=[].slice.call(document.querySelectorAll('.empblock'));
-  if(blocks.length<=DEFAULT_EMP)return;
   var block=btn.closest('.empblock');if(block)block.remove();
   renumberEmployeeBlocks()
 }
