@@ -587,6 +587,7 @@ th{background:#f6f8f9}
 /* FINAL v39: Ustawienia podzielone na osobne przyciski i panele */
 /* FINAL v40: systemy pracy tylko dla dni faktycznego udziału pracownika */
 /* FINAL v41: naprawione wyświetlanie pracowników w Ustawienia → Grupy */
+/* FINAL v42: Ewidencja bez A/B w systemie + godzina startu zamiast 'w toku' */
 .groupbadge{display:flex;align-items:center;min-height:39px;padding:9px 11px;border:1px solid #e6c66f;border-radius:9px;background:#fff7d8;color:#60470d;font-weight:800}
 .groupassign{display:grid;grid-template-columns:minmax(180px,1fr) 130px;gap:10px;align-items:center;padding:7px 0;border-bottom:1px solid var(--line)}
 .groupassign:last-child{border-bottom:0}
@@ -1400,7 +1401,22 @@ function effectiveMins(e,name,i){return Math.max(0,minsForEmployee(e,name,i)-pau
 function fmt(m){m=Math.round(m||0);return Math.floor(m/60)+':'+String(m%60).padStart(2,'0')}
 function shortName(n){return String(n||'').trim().split(/\s+/)[0]||'Pracownik'}
 function empSystemSummary(e,name,i){var u=[];employeeDays(e,name,i).forEach(function(x){if(x.system&&x.system!=='Wolne / brak pracy'&&u.indexOf(x.system)<0)u.push(x.system)});var s=u.join(', ')||'Wolne';return s==='Wolne'?s:(hasBreakGroups()?s+' · Grupa '+employeeBreakGroup(e,name,i):s)}
-function systemSummary(e){var a=e.employees||[];if(!a.length){var u=[];(e.day_systems||[]).forEach(function(x){if(x.system&&x.system!=='Wolne / brak pracy'&&u.indexOf(x.system)<0)u.push(x.system)});return u.join(', ')||'—'}if(a.length===1)return empSystemSummary(e,a[0],0);return a.map(function(n,i){return shortName(n)+': '+empSystemSummary(e,n,i)}).join(' | ')}
+function systemSummary(e){
+  var a=e.employees||[];
+  function plain(name,i){
+    var u=[];
+    employeeDays(e,name,i).forEach(function(x){
+      if(x.system&&x.system!=='Wolne / brak pracy'&&u.indexOf(x.system)<0)u.push(x.system)
+    });
+    return u.join(', ')||'Wolne'
+  }
+  if(!a.length){
+    var u=[];(e.day_systems||[]).forEach(function(x){if(x.system&&x.system!=='Wolne / brak pracy'&&u.indexOf(x.system)<0)u.push(x.system)});
+    return u.join(', ')||'—'
+  }
+  if(a.length===1)return plain(a[0],0);
+  return a.map(function(n,i){return shortName(n)+': '+plain(n,i)}).join(' | ')
+}
 function timeSummary(e){if(!e.end_date)return'—';var a=e.employees||[];if(!a.length)return'—';if(a.length===1)return fmt(effectiveMins(e,a[0],0));return a.map(function(n,i){return shortName(n)+': '+fmt(effectiveMins(e,n,i))}).join(' | ')}
 
 function dashboardGoView(view){
@@ -1527,7 +1543,7 @@ function renderEntries(){
     return textOk&&monthOk&&statusOk&&typeOk&&employeeOk
   }).map(function(e){
     var ac=ME.role==='viewer'?'':'<button class="btn secondary" onclick="openEntry('+e.id+')">Edytuj</button> '+(ME.role==='admin'?'<button class="btn danger" onclick="delEntry('+e.id+')">Usuń</button>':'');
-    return'<tr class="mark-'+(e.mark_color||'none')+'"><td class="actioncol">'+ac+'</td><td>'+esc(e.start_date)+(e.end_date?' → '+esc(e.end_date):' · w toku')+'</td><td><b>'+esc(e.number)+'</b></td><td>'+esc(entryDeviceLabel(e))+'</td><td>'+esc((e.employees||[]).join(', '))+'</td><td>'+esc(systemSummary(e))+'</td><td>'+esc(timeSummary(e))+'</td><td>'+esc(notesWithoutSection(e.notes))+'</td></tr>'
+    return'<tr class="mark-'+(e.mark_color||'none')+'"><td class="actioncol">'+ac+'</td><td>'+esc(e.start_date)+(e.end_date?' → '+esc(e.end_date):' · start '+esc(e.start_time||'—'))+'</td><td><b>'+esc(e.number)+'</b></td><td>'+esc(entryDeviceLabel(e))+'</td><td>'+esc((e.employees||[]).join(', '))+'</td><td>'+esc(systemSummary(e))+'</td><td>'+esc(timeSummary(e))+'</td><td>'+esc(notesWithoutSection(e.notes))+'</td></tr>'
   }).join('')
 }
 function opts(a,v){return'<option value=""></option>'+a.map(function(x){return'<option'+(x===v?' selected':'')+'>'+esc(x)+'</option>'}).join('')}
