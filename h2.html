@@ -229,6 +229,7 @@
 /* FINAL v25: górny pasek do pełnej szerokości */
 /* FINAL v26: ranking wspólnym czasem centrali + soboty domyślnie wolne */
 /* FINAL v27: 2 pracowników domyślnie + dodawanie do 4 + sekcje centrali dzielonej */
+/* FINAL v28: pomarańczowy Dodaj pracownika + sekcja pod typem */
 .statscharts{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
 .statscharts .wide{grid-column:1/-1}
 .chartlegend{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin:2px 0 12px}
@@ -485,6 +486,26 @@ th{background:#f6f8f9}
 #sectionsCard textarea{min-height:92px;resize:vertical}
 .sectiontag{display:inline-block;padding:2px 7px;border-radius:999px;background:#fff0cf;color:#654a12;font-weight:800;font-size:11px;margin-left:5px}
 
+
+/* FINAL v28: pomarańczowy Dodaj pracownika + sekcja pod typem centrali */
+.empaddbar #addEmpBtn{
+  background:#f97316 !important;
+  color:#fff !important;
+  border:0;
+  box-shadow:0 4px 10px rgba(249,115,22,.18);
+}
+.empaddbar #addEmpBtn:hover{background:#e96512 !important}
+#sectionField{
+  grid-column:1 / -1;
+  width:100%;
+  margin-top:-2px;
+}
+#sectionField select{max-width:360px}
+@media(max-width:800px){
+  #sectionField{grid-column:1 / -1}
+  #sectionField select{max-width:none}
+}
+
 </style></head><body>
 <div id="login" class="login"><div class="box"><button type="button" class="btn secondary" onclick="location.href='./index.html'" style="width:100%;margin:0 0 14px">← Wróć do wyboru działu</button><div class="brand"><span class="brandmark" aria-hidden="true"><i></i><i></i><i></i></span><span class="brandtext"><span class="clima">Clima</span><span class="gold">Gold</span></span></div><h2>Elektrycy H2</h2><div class="hint">Wspólna baza online</div><div class="field"><label>Login</label><input id="lu" value="brygadzista" autocomplete="username"></div><div class="field"><label>Hasło</label><input id="lp" type="password" autocomplete="current-password"></div><button class="btn" onclick="doLogin()">Zaloguj</button><div id="le" class="error"></div></div></div>
 <div id="app" class="app"><aside class="side"><div class="brand"><span class="brandmark" aria-hidden="true"><i></i><i></i><i></i></span><span class="brandtext"><span class="clima">Clima</span><span class="gold">Gold</span></span></div><span class="hall">ELEKTRYCY H2</span><div class="nav">
@@ -559,7 +580,7 @@ th{background:#f6f8f9}
 <section id="settings" class="view"><div class="grid"><div class="card"><h3>Pracownicy</h3><div id="employees"></div><button class="btn secondary" onclick="addSetting('employees')">+ Dodaj</button></div><div class="card"><h3>Typy urządzeń</h3><div id="types"></div><button class="btn secondary" onclick="addSetting('types')">+ Dodaj</button></div><div class="card"><h3>Systemy pracy</h3><div id="systems"></div><button class="btn secondary" onclick="addSetting('systems')">+ Dodaj</button></div><div class="card" id="sectionsCard" style="display:none"><h3>Sekcje centrali dzielonej</h3><div class="field"><label>Lista sekcji</label><textarea id="sectionsText" placeholder="S1, S2, S3, S4"></textarea></div><div class="muted">Oddziel sekcje przecinkami. Ta lista pojawi się przy typie „Centrala dzielona”.</div></div></div><button class="btn" style="margin-top:12px" onclick="saveSettings()">Zapisz ustawienia</button></section>
 <section id="users" class="view"><div class="card"><h3>Nowe konto</h3><div class="grid"><div class="field"><label>Login</label><input id="nu"></div><div class="field"><label>Hasło</label><input id="np" type="password"></div><div class="field"><label>Rola</label><select id="nr"><option value="supervisor">Przełożony</option><option value="viewer">Tylko podgląd</option><option value="admin">Administrator</option></select></div></div><button class="btn" onclick="addUser()">Dodaj konto</button></div><div class="card" style="margin-top:14px"><div id="ul"></div></div></section>
 </main></div>
-<div id="modal" class="modal"><div class="dialog"><h2>Wpis ewidencji</h2><input id="eid" type="hidden"><div class="quickwork"><button type="button" class="btn" onclick="quickStartWork()"><span class="qicon play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5.2v13.6c0 .9 1 1.4 1.7.9l9.6-6.8c.7-.5.7-1.5 0-2L9.7 4.1C9 3.6 8 4.1 8 5.2Z"/></svg></span><span>START PRACY</span></button><button type="button" class="btn secondary" onclick="quickEndWork()"><span class="qicon stop" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="1.8"/></svg></span><span>KONIEC PRACY</span></button></div><div class="grid"><div class="field"><label>Nr / oznaczenie</label><input id="no"></div><div class="field"><label>Data rozpoczęcia</label><input id="sd" type="date"></div><div class="field"><label>Data zakończenia</label><input id="ed" type="date"></div><div class="field"><label>Typ urządzenia</label><select id="dt" onchange="updateSectionVisibility()"></select></div><div class="field" id="sectionField" style="display:none"><label>Sekcja centrali dzielonej</label><select id="section"></select></div><div class="field"><label>Godzina rozpoczęcia</label><input id="stt" type="time"></div><div class="field"><label>Godzina zakończenia</label><input id="ett" type="time"></div></div><h3>Pracownicy, system pracy i korekty czasu</h3><div class="muted">Każdy pracownik ma własny system pracy na każdy dzień wpisu.</div><div id="empsel"></div><div class="toolbar empaddbar"><button id="addEmpBtn" type="button" class="btn secondary" onclick="addEmployeeBlock()">+ Dodaj pracownika</button></div><div class="grid"><div class="field"><label>Kolor</label><select id="markcolor"><option value="">Bez koloru</option><option value="yellow">Żółty</option><option value="green">Zielony</option><option value="blue">Niebieski</option><option value="red">Czerwony</option><option value="orange">Pomarańczowy</option><option value="purple">Fioletowy</option></select></div><div class="field" style="grid-column:span 2"><label>Uwagi</label><textarea id="notes"></textarea></div></div><div class="toolbar"><button class="btn" onclick="saveEntry()">Zapisz</button><button class="btn secondary" onclick="closeEntry()">Anuluj</button></div></div></div>
+<div id="modal" class="modal"><div class="dialog"><h2>Wpis ewidencji</h2><input id="eid" type="hidden"><div class="quickwork"><button type="button" class="btn" onclick="quickStartWork()"><span class="qicon play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5.2v13.6c0 .9 1 1.4 1.7.9l9.6-6.8c.7-.5.7-1.5 0-2L9.7 4.1C9 3.6 8 4.1 8 5.2Z"/></svg></span><span>START PRACY</span></button><button type="button" class="btn secondary" onclick="quickEndWork()"><span class="qicon stop" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="1.8"/></svg></span><span>KONIEC PRACY</span></button></div><div class="grid"><div class="field"><label>Nr / oznaczenie</label><input id="no"></div><div class="field"><label>Data rozpoczęcia</label><input id="sd" type="date"></div><div class="field"><label>Data zakończenia</label><input id="ed" type="date"></div><div class="field"><label>Typ urządzenia</label><select id="dt" onchange="updateSectionVisibility()"></select></div><div class="field" id="sectionField" style="display:none"><label>Sekcja centrali dzielonej</label><select id="section"></select></div><div class="field"><label>Godzina rozpoczęcia</label><input id="stt" type="time"></div><div class="field"><label>Godzina zakończenia</label><input id="ett" type="time"></div></div><h3>Pracownicy, system pracy i korekty czasu</h3><div class="muted">Każdy pracownik ma własny system pracy na każdy dzień wpisu.</div><div id="empsel"></div><div class="toolbar empaddbar"><button id="addEmpBtn" type="button" class="btn" onclick="addEmployeeBlock()">+ Dodaj pracownika</button></div><div class="grid"><div class="field"><label>Kolor</label><select id="markcolor"><option value="">Bez koloru</option><option value="yellow">Żółty</option><option value="green">Zielony</option><option value="blue">Niebieski</option><option value="red">Czerwony</option><option value="orange">Pomarańczowy</option><option value="purple">Fioletowy</option></select></div><div class="field" style="grid-column:span 2"><label>Uwagi</label><textarea id="notes"></textarea></div></div><div class="toolbar"><button class="btn" onclick="saveEntry()">Zapisz</button><button class="btn secondary" onclick="closeEntry()">Anuluj</button></div></div></div>
 <script>
 
 var HALL='H2',D=null,ME=null,TOKEN_KEY='cg_'+HALL+'_token',DEFAULT_EMP=HALL==='AUTO'?1:2,MAX_EMP=HALL==='AUTO'?1:4,SECTION_PREFIX='__CG_SECTION__:';
