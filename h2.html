@@ -582,11 +582,122 @@ th{background:#f6f8f9}
 
 
 /* FINAL v36: grupy przerw tylko Montaż H1 */
+/* FINAL v37: zegary czasu + rozwijane ustawienia przerw */
 .groupbadge{display:flex;align-items:center;min-height:39px;padding:9px 11px;border:1px solid #e6c66f;border-radius:9px;background:#fff7d8;color:#60470d;font-weight:800}
 .groupassign{display:grid;grid-template-columns:minmax(180px,1fr) 130px;gap:10px;align-items:center;padding:7px 0;border-bottom:1px solid var(--line)}
 .groupassign:last-child{border-bottom:0}
 .groupassign select{padding:9px;border:1px solid var(--line);border-radius:9px;background:#fff}
 @media(max-width:800px){.groupassign{grid-template-columns:1fr}}
+
+
+/* FINAL v37: rozwijane przerwy z zegarami */
+.breakaccordion{
+  border:1px solid var(--line);
+  border-radius:12px;
+  margin:10px 0;
+  background:#fff;
+  overflow:hidden;
+}
+.breakaccordion>summary{
+  list-style:none;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:13px 14px;
+  font-weight:800;
+  background:#f7f8fa;
+  user-select:none;
+}
+.breakaccordion>summary::-webkit-details-marker{display:none}
+.breakaccordion>summary:after{
+  content:"⌄";
+  font-size:20px;
+  line-height:1;
+  transition:transform .18s ease;
+}
+.breakaccordion[open]>summary:after{transform:rotate(180deg)}
+.breakaccordion[open]>summary{
+  background:#fff7dc;
+  border-bottom:1px solid #ead49b;
+}
+.breaksummaryleft{display:flex;align-items:center;gap:9px}
+.breakclockicon{
+  width:28px;height:28px;border-radius:50%;
+  display:inline-flex;align-items:center;justify-content:center;
+  background:#fff0bd;border:1px solid #dfba59;color:#73530a;
+  font-size:16px;
+}
+.breakcount{font-size:12px;font-weight:700;color:var(--muted)}
+.breakaccordionbody{padding:12px}
+.breakgroups{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.breakgroups.single{grid-template-columns:1fr}
+.breakgroupbox{
+  border:1px solid #e7d6a6;
+  background:#fffaf0;
+  border-radius:11px;
+  padding:11px;
+}
+.breakgrouphead{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:10px;margin-bottom:9px;font-weight:800;color:#634b12;
+}
+.breakrows{display:flex;flex-direction:column;gap:8px}
+.breakrow{
+  display:grid;
+  grid-template-columns:auto minmax(105px,1fr) auto minmax(105px,1fr) auto;
+  gap:7px;
+  align-items:end;
+  padding:8px;
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:10px;
+}
+.breakrowclock{
+  width:32px;height:32px;border-radius:9px;
+  display:flex;align-items:center;justify-content:center;
+  background:#fff3c9;color:#6b4f0a;border:1px solid #e1c26b;
+  align-self:center;
+}
+.breaktimefield label{display:block;font-size:11px;color:var(--muted);margin:0 0 3px}
+.breaktimefield input[type=time]{
+  width:100%;
+  min-height:38px;
+  padding:7px 8px;
+  border:1px solid #d9ad45;
+  background:#fffdf7;
+  border-radius:8px;
+  font-weight:700;
+}
+.breakdash{align-self:center;font-weight:900;color:#8a6d1e;padding-bottom:2px}
+.breakremove{
+  align-self:center;
+  min-width:38px;
+  height:38px;
+  padding:0 10px !important;
+}
+.addbreakbtn{
+  margin-top:9px;
+  background:#fff3c9 !important;
+  border:1px solid #dfba59 !important;
+  color:#684d0b !important;
+}
+@media(max-width:800px){
+  .breakgroups{grid-template-columns:1fr}
+  .breakrow{grid-template-columns:32px 1fr 20px 1fr 38px}
+}
+@media(max-width:520px){
+  .breakrow{
+    grid-template-columns:32px 1fr 38px;
+    align-items:center;
+  }
+  .breakrowclock{grid-column:1}
+  .breaktimefield.start{grid-column:2}
+  .breakremove{grid-column:3;grid-row:1}
+  .breakdash{display:none}
+  .breaktimefield.end{grid-column:2;grid-row:2}
+}
 
 </style></head><body>
 <div id="login" class="login"><div class="box"><button type="button" class="btn secondary" onclick="location.href='./index.html'" style="width:100%;margin:0 0 14px">← Wróć do wyboru działu</button><div class="brand"><span class="brandmark" aria-hidden="true"><i></i><i></i><i></i></span><span class="brandtext"><span class="clima">Clima</span><span class="gold">Gold</span></span></div><h2>Elektrycy H2</h2><div class="hint">Wspólna baza online</div><div class="field"><label>Login</label><input id="lu" value="brygadzista" autocomplete="username"></div><div class="field"><label>Hasło</label><input id="lp" type="password" autocomplete="current-password"></div><button class="btn" onclick="doLogin()">Zaloguj</button><div id="le" class="error"></div></div></div>
@@ -659,7 +770,7 @@ th{background:#f6f8f9}
 <section id="entries" class="view"><div class="toolbar"><button id="addbtn" class="btn" onclick="openEntry()">+ Dodaj wpis</button><input id="entryMonth" type="month" onchange="entryMonthChanged()" style="padding:10px;border:1px solid var(--line);border-radius:9px"><button id="entryAllBtn" class="btn secondary entryfilter active" onclick="setEntryFilter('all')">Wszystkie</button><button id="entryOngoingBtn" class="btn secondary entryfilter" onclick="setEntryFilter('ongoing')">W TOKU</button><select id="entryTypeFilter" onchange="renderEntries()" class="entryselect"><option value="">Wszystkie rodzaje central</option></select><select id="entryEmployeeFilter" onchange="renderEntries()" class="entryselect"><option value="">Wszyscy pracownicy</option></select><input id="search" placeholder="Szukaj nr, pracownika lub typu" oninput="renderEntries()" style="padding:10px;border:1px solid var(--line);border-radius:9px;min-width:240px"></div><div class="tablewrap"><table><thead><tr><th class="actioncol">Akcje</th><th>Data</th><th>Nr</th><th>Typ</th><th>Pracownicy</th><th>System</th><th>Czas</th><th>Uwagi</th></tr></thead><tbody id="et"></tbody></table></div></section>
 <section id="stats" class="view"><div class="toolbar"><input id="month" type="month" onchange="renderStats()" style="padding:9px"><select id="statType" onchange="renderStats()" style="padding:9px"></select><select id="statEmployee" onchange="renderStats()" style="padding:9px"><option value="">Wszyscy pracownicy</option></select><button class="btn secondary" onclick="exportStatsCSV()">Eksport CSV</button><button class="btn secondary" onclick="exportStatsXLS()">Eksport XLS</button></div><div class="cards"><div class="card"><div class="muted">Zakończone centrale</div><div id="sk1" class="kpi">0</div></div><div class="card"><div class="muted">Roboczogodziny łącznie</div><div id="sk2" class="kpi">0:00</div></div></div><div class="card statsnote" style="margin-top:14px"><h3>Top 3 — najkrótszy średni czas pełnej pracy</h3><div id="rank"></div><div class="muted" style="margin-top:10px"><b>Ranking i średnia liczone są tylko z pełnych prac.</b> Każdy pracownik będący przy centrali od początku do końca dostaje do rankingu ten sam czas wykonania centrali, niezależnie od systemu 8 h / 10 h. Indywidualny system nadal służy do liczenia roboczogodzin. Dołączenie później lub wcześniejsze zakończenie jest udziałem i nie wpływa na miejsce.</div></div><div class="statscharts"><div class="card"><h3>Pełne prace / udziały</h3><div class="chartlegend"><span><i class="lg-full"></i> Pełne prace</span><span><i class="lg-part"></i> Udziały</span></div><div id="chartWorkType" class="chartbox"></div></div><div class="card"><h3>Czas pełnych prac / udziałów</h3><div class="chartlegend"><span><i class="lg-full"></i> Czas pełnych</span><span><i class="lg-part"></i> Czas udziałów</span></div><div id="chartTimeMix" class="chartbox"></div></div><div class="card wide"><h3>Średni czas pełnej pracy</h3><div class="muted" style="margin-bottom:10px">Wspólny czas wykonania centrali — system 8 h / 10 h nie zmienia wyniku rankingu.</div><div id="chartAvgFull" class="chartbox"></div></div></div><div class="tablewrap" style="margin-top:14px"><table><thead><tr><th>Miejsce</th><th>Pracownik</th><th>Wszystkie prace</th><th>Pełne prace</th><th>Udziały</th><th>Dołączył później</th><th>Zakończył wcześniej</th><th>Czas łącznie</th><th>Czas pełnych</th><th>Czas udziałów</th><th>Średnia pełnej pracy</th></tr></thead><tbody id="st"></tbody></table></div></section>
 <section id="ratings" class="view"><div class="card"><div style="display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap"><div><h3 style="margin:0">Ocena kompetencji</h3><div class="muted">„-” = ocena nieustalona</div></div><button id="saveratings" class="btn" onclick="saveRatings()">Zapisz oceny</button></div></div><div class="tablewrap" style="margin-top:14px"><table><thead><tr><th>Miejsce</th><th>Pracownik</th><th>Wiedza i kompetencje</th><th>Wydajność<br>(szybkość pracy)</th><th>Dokładność<br>(bezbłędność)</th><th>Jakość pracy<br>(estetyka)</th><th>Wynik</th></tr></thead><tbody id="rt"></tbody></table></div></section>
-<section id="settings" class="view"><div class="grid"><div class="card"><h3>Pracownicy</h3><div id="employees"></div><button class="btn secondary" onclick="addSetting('employees')">+ Dodaj</button></div><div class="card"><h3>Typy urządzeń</h3><div id="types"></div><button class="btn secondary" onclick="addSetting('types')">+ Dodaj</button></div><div class="card"><h3>Systemy pracy</h3><div id="systems"></div><button class="btn secondary" onclick="addSetting('systems')">+ Dodaj</button></div><div class="card"><h3>Planowe przerwy pracowników</h3><div class="muted">Dla każdego systemu pracy wpisz godziny przerw, np. <b>09:00-09:15</b> albo <b>09:00-09:15, 13:00-13:15</b>. Tylko na Montażu H1 przerwy są rozdzielone na Grupę A i Grupę B.</div><div id="systemBreakSettings"></div></div><div class="card" id="employeeBreakGroupsCard" style="display:none"><h3>Przypisanie pracowników do grup</h3><div class="muted">Montaż H1: przypisz każdego pracownika do Grupy A albo Grupy B. Przy dodawaniu wpisu grupa będzie wybierana automatycznie.</div><div id="employeeBreakGroupSettings"></div></div><div class="card" id="sectionsCard" style="display:none"><h3>Sekcje centrali dzielonej</h3><div class="field"><label>Lista sekcji</label><textarea id="sectionsText" placeholder="S1, S2, S3, S4"></textarea></div><div class="muted">Oddziel sekcje przecinkami. Ta lista pojawi się przy typie „Centrala dzielona”.</div></div></div><button class="btn" style="margin-top:12px" onclick="saveSettings()">Zapisz ustawienia</button></section>
+<section id="settings" class="view"><div class="grid"><div class="card"><h3>Pracownicy</h3><div id="employees"></div><button class="btn secondary" onclick="addSetting('employees')">+ Dodaj</button></div><div class="card"><h3>Typy urządzeń</h3><div id="types"></div><button class="btn secondary" onclick="addSetting('types')">+ Dodaj</button></div><div class="card"><h3>Systemy pracy</h3><div id="systems"></div><button class="btn secondary" onclick="addSetting('systems')">+ Dodaj</button></div><div class="card"><h3>Planowe przerwy pracowników</h3><div class="muted">Rozwiń system pracy i wybierz godziny przerwy z pól zegara. Możesz dodać kolejne przerwy. Na Montażu H1 ustawienia są osobno dla Grupy A i Grupy B.</div><div id="systemBreakSettings"></div></div><div class="card" id="employeeBreakGroupsCard" style="display:none"><h3>Przypisanie pracowników do grup</h3><div class="muted">Montaż H1: przypisz każdego pracownika do Grupy A albo Grupy B. Przy dodawaniu wpisu grupa będzie wybierana automatycznie.</div><div id="employeeBreakGroupSettings"></div></div><div class="card" id="sectionsCard" style="display:none"><h3>Sekcje centrali dzielonej</h3><div class="field"><label>Lista sekcji</label><textarea id="sectionsText" placeholder="S1, S2, S3, S4"></textarea></div><div class="muted">Oddziel sekcje przecinkami. Ta lista pojawi się przy typie „Centrala dzielona”.</div></div></div><button class="btn" style="margin-top:12px" onclick="saveSettings()">Zapisz ustawienia</button></section>
 <section id="users" class="view"><div class="card"><h3>Nowe konto</h3><div class="grid"><div class="field"><label>Login</label><input id="nu"></div><div class="field"><label>Hasło</label><input id="np" type="password"></div><div class="field"><label>Rola</label><select id="nr"><option value="supervisor">Przełożony</option><option value="viewer">Tylko podgląd</option><option value="admin">Administrator</option></select></div></div><button class="btn" onclick="addUser()">Dodaj konto</button></div><div class="card" style="margin-top:14px"><div id="ul"></div></div></section>
 </main></div>
 <div id="modal" class="modal"><div class="dialog"><h2>Wpis ewidencji</h2><input id="eid" type="hidden"><div class="quickwork"><button type="button" class="btn" onclick="quickStartWork()"><span class="qicon play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5.2v13.6c0 .9 1 1.4 1.7.9l9.6-6.8c.7-.5.7-1.5 0-2L9.7 4.1C9 3.6 8 4.1 8 5.2Z"/></svg></span><span>START PRACY</span></button><button type="button" class="btn secondary" onclick="quickEndWork()"><span class="qicon stop" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="1.8"/></svg></span><span>KONIEC PRACY</span></button></div><div class="grid"><div class="field"><label>Nr / oznaczenie</label><input id="no"></div><div class="field"><label>Data rozpoczęcia</label><input id="sd" type="date"></div><div class="field"><label>Data zakończenia</label><input id="ed" type="date"></div><div class="field"><label>Typ urządzenia</label><select id="dt" onchange="updateSectionVisibility()"></select></div><div class="field"><label>Godzina rozpoczęcia</label><input id="stt" type="time"></div><div class="field"><label>Godzina zakończenia</label><input id="ett" type="time"></div></div><div class="field" id="sectionField" style="display:none"><label>Sekcja centrali dzielonej</label><select id="section"></select></div><h3>Pracownicy, system pracy i korekty czasu</h3><div class="muted">Każdy pracownik ma własny system pracy na każdy dzień wpisu.</div><div id="empsel"></div><div class="toolbar empaddbar"><button id="addEmpBtn" type="button" class="btn" onclick="addEmployeeBlock()">+ Dodaj pracownika</button></div><div class="grid"><div class="field"><label>Kolor</label><select id="markcolor"><option value="">Bez koloru</option><option value="yellow">Żółty</option><option value="green">Zielony</option><option value="blue">Niebieski</option><option value="red">Czerwony</option><option value="orange">Pomarańczowy</option><option value="purple">Fioletowy</option></select></div><div class="field" style="grid-column:span 2"><label>Uwagi</label><textarea id="notes"></textarea></div></div><div class="toolbar"><button class="btn" onclick="saveEntry()">Zapisz</button><button class="btn secondary" onclick="closeEntry()">Anuluj</button></div></div></div>
@@ -794,23 +905,70 @@ function systemBreakRanges(system,group){
   if(typeof a==='string')a=parseBreakText(a);
   return Array.isArray(a)?a.map(function(x){return String(x).trim()}).filter(Boolean):[]
 }
+
+function breakRangeParts(v){
+  var m=String(v||'').trim().match(/^(\d{1,2}:\d{2})\s*-\s*(\d{1,2}:\d{2})$/);
+  return m?[m[1],m[2]]:['','']
+}
+function breakRowHtml(systemIndex,group,range){
+  var p=breakRangeParts(range);
+  return'<div class="breakrow">'+
+    '<div class="breakrowclock" title="Godzina przerwy">◷</div>'+
+    '<div class="breaktimefield start"><label>Od</label><input type="time" class="breakstart" data-system-index="'+systemIndex+'" data-group="'+group+'" value="'+esc(p[0])+'"></div>'+
+    '<div class="breakdash">—</div>'+
+    '<div class="breaktimefield end"><label>Do</label><input type="time" class="breakend" data-system-index="'+systemIndex+'" data-group="'+group+'" value="'+esc(p[1])+'"></div>'+
+    '<button type="button" class="btn danger breakremove" onclick="removeScheduledBreak(this)" title="Usuń przerwę">×</button>'+
+  '</div>'
+}
+function breakGroupBoxHtml(systemIndex,group,title,ranges){
+  var rows=(ranges&&ranges.length?ranges:['']).map(function(x){return breakRowHtml(systemIndex,group,x)}).join('');
+  return'<div class="breakgroupbox" data-group="'+group+'">'+
+    '<div class="breakgrouphead"><span>'+title+'</span><span class="breakcount">'+(ranges.length===1?'1 przerwa':ranges.length+' przerw')+'</span></div>'+
+    '<div class="breakrows">'+rows+'</div>'+
+    '<button type="button" class="btn secondary addbreakbtn" data-system-index="'+systemIndex+'" data-group="'+group+'" onclick="addScheduledBreak(this)">+ Dodaj przerwę</button>'+
+  '</div>'
+}
+function addScheduledBreak(btn){
+  var box=btn.closest('.breakgroupbox'),rows=box.querySelector('.breakrows');
+  rows.insertAdjacentHTML('beforeend',breakRowHtml(+btn.dataset.systemIndex,btn.dataset.group,''));
+  var row=rows.lastElementChild,input=row&&row.querySelector('.breakstart');if(input)input.focus()
+}
+function removeScheduledBreak(btn){
+  var row=btn.closest('.breakrow'),box=btn.closest('.breakgroupbox');
+  if(row)row.remove();
+  if(box&&!box.querySelector('.breakrow')){
+    var add=box.querySelector('.addbreakbtn');
+    box.querySelector('.breakrows').insertAdjacentHTML('beforeend',breakRowHtml(+(add&&add.dataset.systemIndex||0),(add&&add.dataset.group)||'A',''))
+  }
+}
 function validateSystemBreaks(){
-  var bad=[];
-  document.querySelectorAll('#systemBreakSettings .breakinput').forEach(function(x){
-    parseBreakText(x.value).forEach(function(v){if(!parseBreakRange(v))bad.push(v)})
+  var ok=true,msg='';
+  document.querySelectorAll('#systemBreakSettings .breakrow').forEach(function(row){
+    var a=row.querySelector('.breakstart').value,b=row.querySelector('.breakend').value;
+    if(!a&&!b)return;
+    if(!a||!b){ok=false;msg='Uzupełnij godzinę OD i DO dla każdej przerwy.';return}
+    if(hm(b)<=hm(a)){ok=false;msg='Godzina zakończenia przerwy musi być późniejsza niż rozpoczęcia.'}
   });
-  if(bad.length){alert('Popraw godziny przerw. Użyj formatu np. 09:00-09:15.\n\nBłędne: '+bad.join(', '));return false}
-  return true
+  if(!ok)alert(msg);
+  return ok
 }
 function syncSystemBreakInputs(){
   if(!$('systemBreakSettings'))return;
   ensureBreakSettings();
   var fresh={};
-  document.querySelectorAll('#systemBreakSettings .breakinput').forEach(function(x){
-    var i=+x.dataset.systemIndex,g=hasBreakGroups()?(x.dataset.group==='B'?'B':'A'):'A',sy=(D.settings.systems||[])[i]||'';
+  document.querySelectorAll('#systemBreakSettings .breakaccordion').forEach(function(acc){
+    var i=+acc.dataset.systemIndex,sy=(D.settings.systems||[])[i]||'';
     if(!sy)return;
-    if(!fresh[sy])fresh[sy]=hasBreakGroups()?{A:[],B:[]}:{A:[]};
-    fresh[sy][g]=parseBreakText(x.value)
+    fresh[sy]=hasBreakGroups()?{A:[],B:[]}:{A:[]};
+    acc.querySelectorAll('.breakgroupbox').forEach(function(box){
+      var g=hasBreakGroups()?(box.dataset.group==='B'?'B':'A'):'A';
+      var a=[];
+      box.querySelectorAll('.breakrow').forEach(function(row){
+        var fr=row.querySelector('.breakstart').value,to=row.querySelector('.breakend').value;
+        if(fr&&to)a.push(fr+'-'+to)
+      });
+      fresh[sy][g]=a
+    })
   });
   D.settings.system_breaks=fresh
 }
@@ -818,15 +976,19 @@ function renderSystemBreakSettings(){
   var box=$('systemBreakSettings');if(!box)return;
   ensureBreakSettings();
   box.innerHTML=(D.settings.systems||[]).map(function(s,i){
-    var a=systemBreakRanges(s,'A').join(', ');
-    if(!hasBreakGroups())return'<div class="breaksystem"><b>'+esc(s||('System '+(i+1)))+'</b><div class="field"><label>Przerwy</label><input class="breakinput" data-system-index="'+i+'" data-group="A" value="'+esc(a)+'" placeholder="09:00-09:15, 13:00-13:15"></div></div>';
-    var b=systemBreakRanges(s,'B').join(', ');
-    return'<div class="breaksystem"><b>'+esc(s||('System '+(i+1)))+'</b><div class="breakgrid">'+
-      '<div class="field"><label>Grupa A — przerwy</label><input class="breakinput" data-system-index="'+i+'" data-group="A" value="'+esc(a)+'" placeholder="09:00-09:15"></div>'+
-      '<div class="field"><label>Grupa B — przerwy</label><input class="breakinput" data-system-index="'+i+'" data-group="B" value="'+esc(b)+'" placeholder="09:15-09:30"></div>'+
-    '</div></div>'
+    var a=systemBreakRanges(s,'A'),b=hasBreakGroups()?systemBreakRanges(s,'B'):[];
+    var total=a.length+b.length;
+    var countText=hasBreakGroups()?('A: '+a.length+' · B: '+b.length):(a.length===1?'1 przerwa':a.length+' przerw');
+    var groups=hasBreakGroups()
+      ?'<div class="breakgroups">'+breakGroupBoxHtml(i,'A','Grupa A',a)+breakGroupBoxHtml(i,'B','Grupa B',b)+'</div>'
+      :'<div class="breakgroups single">'+breakGroupBoxHtml(i,'A','Przerwy',a)+'</div>';
+    return'<details class="breakaccordion" data-system-index="'+i+'"'+(i===0?' open':'')+'>'+
+      '<summary><span class="breaksummaryleft"><span class="breakclockicon">◷</span><span>'+esc(s||('System '+(i+1)))+'</span></span><span class="breakcount">'+countText+'</span></summary>'+
+      '<div class="breakaccordionbody">'+groups+'</div>'+
+    '</details>'
   }).join('')||'<span class="muted">Najpierw dodaj system pracy.</span>'
 }
+
 function syncEmployeeBreakGroupInputs(){
   ensureBreakSettings();
   if(!hasBreakGroups()){D.settings.employee_break_groups={};return}
