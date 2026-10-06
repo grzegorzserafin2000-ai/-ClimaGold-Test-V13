@@ -592,6 +592,7 @@ th{background:#f6f8f9}
 /* FINAL v44: zakończone wpisy mają widoczny status ZAKOŃCZONE */
 /* FINAL v45: uproszczony opis ustawień przerw */
 /* FINAL v46: Montaż H1 ma wskazówkę o przypisaniu pracowników do Grup A/B */
+/* FINAL v47: wybór dzisiejszego systemu pracy na Dashboardzie */
 .groupbadge{display:flex;align-items:center;min-height:39px;padding:9px 11px;border:1px solid #e6c66f;border-radius:9px;background:#fff7d8;color:#60470d;font-weight:800}
 .groupassign{display:grid;grid-template-columns:minmax(180px,1fr) 130px;gap:10px;align-items:center;padding:7px 0;border-bottom:1px solid var(--line)}
 .groupassign:last-child{border-bottom:0}
@@ -818,6 +819,84 @@ th{background:#f6f8f9}
   .settingssavebtn{width:100%}
 }
 
+
+/* FINAL v47: dzisiejszy system pracy */
+.today-system-card{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:18px;
+  margin:0 0 14px;
+  padding:14px 16px;
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:14px;
+  box-shadow:0 1px 4px rgba(0,0,0,.04);
+}
+.today-system-copy{min-width:0}
+.today-system-title{
+  font-size:15px;
+  font-weight:900;
+  margin-bottom:4px;
+}
+.today-system-help{
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.4;
+}
+.today-system-control{
+  min-width:260px;
+  display:grid;
+  grid-template-columns:auto minmax(155px,1fr);
+  align-items:center;
+  gap:6px 9px;
+}
+.today-system-date{
+  grid-column:1;
+  font-size:12px;
+  font-weight:800;
+  color:var(--muted);
+  white-space:nowrap;
+}
+#todaySystemSelect{
+  grid-column:2;
+  min-height:42px;
+  padding:9px 34px 9px 11px;
+  border:1px solid #d7dce2;
+  border-radius:10px;
+  background:#fff;
+  font-weight:800;
+}
+.today-system-card.missing{
+  border-color:#e2b45f;
+  background:#fffaf0;
+}
+.today-system-card.set{
+  border-color:#b9d6c3;
+}
+.today-system-status{
+  grid-column:2;
+  font-size:11px;
+  font-weight:800;
+  min-height:15px;
+}
+.today-system-card.missing .today-system-status{color:#8a5b00}
+.today-system-card.set .today-system-status{color:#267447}
+@media(max-width:760px){
+  .today-system-card{
+    align-items:stretch;
+    flex-direction:column;
+    gap:10px;
+  }
+  .today-system-control{
+    min-width:0;
+    width:100%;
+    grid-template-columns:1fr;
+  }
+  .today-system-date,#todaySystemSelect,.today-system-status{grid-column:1}
+  #todaySystemSelect{width:100%}
+}
+
 </style></head><body>
 <div id="login" class="login"><div class="box"><button type="button" class="btn secondary" onclick="location.href='./index.html'" style="width:100%;margin:0 0 14px">← Wróć do wyboru działu</button><div class="brand"><span class="brandmark" aria-hidden="true"><i></i><i></i><i></i></span><span class="brandtext"><span class="clima">Clima</span><span class="gold">Gold</span></span></div><h2>Montaż H1</h2><div class="hint">Wspólna baza online</div><div class="field"><label>Login</label><input id="lu" value="brygadzista" autocomplete="username"></div><div class="field"><label>Hasło</label><input id="lp" type="password" autocomplete="current-password"></div><button class="btn" onclick="doLogin()">Zaloguj</button><div id="le" class="error"></div></div></div>
 <div id="app" class="app"><aside class="side"><div class="brand"><span class="brandmark" aria-hidden="true"><i></i><i></i><i></i></span><span class="brandtext"><span class="clima">Clima</span><span class="gold">Gold</span></span></div><span class="hall">MONTAŻ H1</span><div class="nav">
@@ -837,6 +916,20 @@ th{background:#f6f8f9}
       <div class="muted">Szybki podgląd najważniejszych informacji</div>
     </div>
     <button class="btn dash-add" onclick="openEntry()">+ Dodaj wpis</button>
+  </div>
+
+  <div class="today-system-card" id="todaySystemCard">
+    <div class="today-system-copy">
+      <div class="today-system-title">Dzisiejszy system pracy</div>
+      <div class="today-system-help">Ustaw raz na dziś — nowe wpisy wybiorą ten system automatycznie. W każdym wpisie nadal możesz go zmienić.</div>
+    </div>
+    <div class="today-system-control">
+      <div class="today-system-date" id="todaySystemDate"></div>
+      <select id="todaySystemSelect" onchange="saveTodaySystem(this.value)">
+        <option value="">Wybierz system na dziś</option>
+      </select>
+      <div class="today-system-status" id="todaySystemStatus"></div>
+    </div>
   </div>
 
   <div class="dash-kpis">
@@ -1446,6 +1539,49 @@ function dashElapsed(e){
   if(h)return h+' h '+String(m).padStart(2,'0')+' min';
   return m+' min'
 }
+
+function ensureDailySystems(){
+  if(!D.settings)D.settings={};
+  if(!D.settings.daily_systems||typeof D.settings.daily_systems!=='object'||Array.isArray(D.settings.daily_systems))D.settings.daily_systems={};
+  return D.settings.daily_systems
+}
+function configuredSystemForDate(ds){
+  var m=ensureDailySystems(),s=m[ds]||'';
+  return (D.settings.systems||[]).indexOf(s)>=0?s:''
+}
+function defaultSystemForDate(ds){
+  return configuredSystemForDate(ds)||(D.settings.systems||[])[0]||''
+}
+function renderTodaySystemPicker(){
+  var sel=$('todaySystemSelect'),card=$('todaySystemCard'),dateEl=$('todaySystemDate'),status=$('todaySystemStatus');
+  if(!sel||!card)return;
+  var today=localDate(new Date()),chosen=configuredSystemForDate(today),systems=D.settings.systems||[];
+  if(dateEl)dateEl.textContent=today;
+  sel.innerHTML='<option value="">Wybierz system na dziś</option>'+systems.map(function(s){return'<option value="'+esc(s)+'"'+(s===chosen?' selected':'')+'>'+esc(s)+'</option>'}).join('');
+  sel.disabled=!ME||ME.role==='viewer'||!systems.length;
+  card.classList.toggle('set',!!chosen);
+  card.classList.toggle('missing',!chosen);
+  if(status){
+    if(!systems.length)status.textContent='Najpierw dodaj system pracy w Ustawieniach.';
+    else if(ME&&ME.role==='viewer')status.textContent=chosen?'Ustawiony: '+chosen:'Nie ustawiono systemu na dziś.';
+    else status.textContent=chosen?'Ustawiony na dziś: '+chosen:'Wybierz system, żeby nie ustawiać go przy każdym wpisie.';
+  }
+}
+async function saveTodaySystem(system){
+  if(!ME||ME.role==='viewer')return;
+  var today=localDate(new Date()),sel=$('todaySystemSelect'),status=$('todaySystemStatus');
+  if(sel)sel.disabled=true;
+  if(status)status.textContent='Zapisywanie…';
+  try{
+    await api('/api/daily-system',{method:'POST',body:JSON.stringify({date:today,system:system||''})});
+    D=await api('/api/data');
+    renderTodaySystemPicker();
+  }catch(e){
+    if(status)status.textContent='Nie udało się zapisać systemu.';
+    if(sel)sel.disabled=false
+  }
+}
+
 function renderDashboardTest(){
   var entries=D.entries||[],today=localDate(new Date());
   var ongoing=entries.filter(function(e){return !e.end_date});
@@ -1493,7 +1629,7 @@ function renderDashboardTest(){
 }
 
 function renderAll(){
-  renderDashboardTest();renderSettings();renderUsers();renderRatings();
+  renderDashboardTest();renderTodaySystemPicker();renderSettings();renderUsers();renderRatings();
   var old=$('statType').value,oldStatEmp=$('statEmployee')?$('statEmployee').value:'';
   $('statType').innerHTML='<option value="">Wszystkie rodzaje</option>'+visibleDeviceTypes().map(function(t){return'<option'+(t===old?' selected':'')+'>'+esc(t)+'</option>'}).join('');
   if($('statEmployee'))$('statEmployee').innerHTML='<option value="">Wszyscy pracownicy</option>'+(D.settings.employees||[]).map(function(n){return'<option value="'+esc(n)+'"'+(n===oldStatEmp?' selected':'')+'>'+esc(n)+'</option>'}).join('');
@@ -1645,7 +1781,7 @@ function renderEmpDayBox(block,existing){
     if(autoFree)sy='Wolne / brak pracy';
     else if(saved!==undefined)sy=saved.system;
     else if(sat)sy='Wolne / brak pracy';
-    else sy=D.settings.systems[0]||'';
+    else sy=defaultSystemForDate(ds);
     var row=document.createElement('div');
     row.className='dayrow empdayrow'+(sat?' saturdayrow':'');
     row.dataset.date=ds;
