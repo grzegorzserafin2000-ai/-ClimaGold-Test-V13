@@ -585,6 +585,8 @@ th{background:#f6f8f9}
 /* FINAL v37: zegary czasu + rozwijane ustawienia przerw */
 /* FINAL v38: działający ręczny refresh + czytelne opisy czasu Dashboardu */
 /* FINAL v39: Ustawienia podzielone na osobne przyciski i panele */
+/* FINAL v40: systemy pracy tylko dla dni faktycznego udziału pracownika */
+/* FINAL v41: naprawione wyświetlanie pracowników w Ustawienia → Grupy */
 .groupbadge{display:flex;align-items:center;min-height:39px;padding:9px 11px;border:1px solid #e6c66f;border-radius:9px;background:#fff7d8;color:#60470d;font-weight:800}
 .groupassign{display:grid;grid-template-columns:minmax(180px,1fr) 130px;gap:10px;align-items:center;padding:7px 0;border-bottom:1px solid var(--line)}
 .groupassign:last-child{border-bottom:0}
@@ -1000,7 +1002,7 @@ function employeeBlockHtml(i,e,cs){
   var lab=MAX_EMP===1?'Pracownik':'Pracownik '+(i+1);
   var remove='<button type="button" class="btn danger empremove" onclick="removeEmployeeBlock(this)">Usuń tego pracownika</button>';
   var groupUi=hasBreakGroups()?'<div class="field"><label>Grupa przerw</label><div class="groupbadge">Grupa A</div></div>':'';
-  return'<div class="empblock" data-slot="'+i+'"><div class="empgrid"><div class="field"><label>'+lab+'</label><select class="emp" onchange="employeeChanged(this)">'+opts(D.settings.employees,(e.employees||[])[i]||'')+'</select></div>'+groupUi+'<input class="breakgroup" type="hidden" value="A"><input class="corr" type="hidden" value="'+(cs[i]||0)+'"></div><div class="participation"><div class="partbuttons"><button type="button" class="btn secondary" onclick="toggleParticipation(this,\'from\')">Dołącza do pracy</button><button type="button" class="btn secondary" onclick="toggleParticipation(this,\'to\')">Kończy pracę</button></div><div class="partfields frompart"><b class="partlabel">Dołącza</b><input class="pfromd" type="date" onchange="updatePartStatus(this.closest(\'.empblock\'))"><input class="pfromt" type="time" onchange="updatePartStatus(this.closest(\'.empblock\'))"><button type="button" class="btn secondary" onclick="clearParticipation(this,\'from\')">Usuń</button></div><div class="partfields topart"><b class="partlabel">Kończy</b><input class="ptod" type="date" onchange="updatePartStatus(this.closest(\'.empblock\'))"><input class="ptot" type="time" onchange="updatePartStatus(this.closest(\'.empblock\'))"><button type="button" class="btn secondary" onclick="clearParticipation(this,\'to\')">Usuń</button></div><div class="muted partstatus">Bez zmian = pracuje od początku do końca.</div></div><div class="breakgroupnote">Planowe przerwy — Grupa A</div><div class="pausebox"><div class="empname">Dodatkowe przerwy / wstrzymania</div><div class="pausebuttons"><button type="button" class="btn secondary" onclick="pauseWork(this)">Wstrzymał pracę</button><button type="button" class="btn secondary" onclick="resumeWork(this)">Rozpoczął pracę</button></div><div class="pauselist"></div><div class="muted pausestatus">Brak przerw.</div></div><div class="empname">System pracy tego pracownika</div><div class="empsystems"></div>'+remove+'</div>'
+  return'<div class="empblock" data-slot="'+i+'"><div class="empgrid"><div class="field"><label>'+lab+'</label><select class="emp" onchange="employeeChanged(this)">'+opts(D.settings.employees,(e.employees||[])[i]||'')+'</select></div>'+groupUi+'<input class="breakgroup" type="hidden" value="A"><input class="corr" type="hidden" value="'+(cs[i]||0)+'"></div><div class="participation"><div class="partbuttons"><button type="button" class="btn secondary" onclick="toggleParticipation(this,\'from\')">Dołącza do pracy</button><button type="button" class="btn secondary" onclick="toggleParticipation(this,\'to\')">Kończy pracę</button></div><div class="partfields frompart"><b class="partlabel">Dołącza</b><input class="pfromd" type="date" onchange="updatePartStatus(this.closest(\'.empblock\'))"><input class="pfromt" type="time" onchange="updatePartStatus(this.closest(\'.empblock\'))"><button type="button" class="btn secondary" onclick="clearParticipation(this,\'from\')">Usuń</button></div><div class="partfields topart"><b class="partlabel">Kończy</b><input class="ptod" type="date" onchange="updatePartStatus(this.closest(\'.empblock\'))"><input class="ptot" type="time" onchange="updatePartStatus(this.closest(\'.empblock\'))"><button type="button" class="btn secondary" onclick="clearParticipation(this,\'to\')">Usuń</button></div><div class="muted partstatus">Bez zmian = pracuje od początku do końca.</div></div><div class="breakgroupnote">Planowe przerwy — Grupa A</div><div class="pausebox"><div class="empname">Dodatkowe przerwy / wstrzymania</div><div class="pausebuttons"><button type="button" class="btn secondary" onclick="pauseWork(this)">Wstrzymał pracę</button><button type="button" class="btn secondary" onclick="resumeWork(this)">Rozpoczął pracę</button></div><div class="pauselist"></div><div class="muted pausestatus">Brak przerw.</div></div><div class="empname">System pracy tego pracownika</div><div class="muted" style="margin-bottom:6px">Pokazywane są tylko dni, w których ten pracownik uczestniczy w pracy przy centrali.</div><div class="empsystems"></div>'+remove+'</div>'
 }
 function renumberEmployeeBlocks(){
   [].slice.call(document.querySelectorAll('.empblock')).forEach(function(block,i){
@@ -1156,14 +1158,14 @@ function syncEmployeeBreakGroupInputs(){
   D.settings.employee_break_groups=fresh
 }
 function renderEmployeeBreakGroupSettings(){
-  var card=$('employeeBreakGroupsCard'),box=$('employeeBreakGroupSettings');if(!card||!box)return;
+  var panel=$('groupsPanel'),box=$('employeeBreakGroupSettings');if(!box)return;
   ensureBreakSettings();
-  card.style.display=hasBreakGroups()?'block':'none';
+  if(panel)panel.style.display='';
   if(!hasBreakGroups()){box.innerHTML='';return}
   box.innerHTML=(D.settings.employees||[]).map(function(name,i){
     var g=assignedBreakGroup(name);
     return'<div class="groupassign"><b>'+esc(name||('Pracownik '+(i+1)))+'</b><select class="empgroupassign" data-employee-index="'+i+'"><option value="A"'+(g==='A'?' selected':'')+'>Grupa A</option><option value="B"'+(g==='B'?' selected':'')+'>Grupa B</option></select></div>'
-  }).join('')||'<span class="muted">Najpierw dodaj pracowników.</span>'
+  }).join('')||'<span class="muted">Najpierw dodaj pracowników w zakładce „Pracownicy”.</span>'
 }
 function dayBreakSnapshot(row,group){
   var sel=row.querySelector('select'),sy=sel?sel.value:'';
@@ -1322,7 +1324,11 @@ function saturdayNeedsConfirmation(x){
 
 
 function hm(x){var z=(x||'').split(':');return(+z[0]||0)*60+(+z[1]||0)}
-function employeeDays(e,name,i){var a=Array.isArray(e.employee_systems)?e.employee_systems:[],r=a.find(function(x,j){return(x.employee&&x.employee===name)||(!x.employee&&j===i)});return r&&Array.isArray(r.days)?r.days:(Array.isArray(e.day_systems)?e.day_systems:[])}
+function employeeDays(e,name,i){
+  var a=Array.isArray(e.employee_systems)?e.employee_systems:[],r=a.find(function(x,j){return(x.employee&&x.employee===name)||(!x.employee&&j===i)})||{},days=Array.isArray(r.days)?r.days:(Array.isArray(e.day_systems)?e.day_systems:[]);
+  var fd=r.work_from_date||'',td=r.work_to_date||'';
+  return days.filter(function(x){return(!fd||x.date>=fd)&&(!td||x.date<=td)})
+}
 function employeeParticipation(e,name,i){
   var a=Array.isArray(e.employee_systems)?e.employee_systems:[],r=a.find(function(x,j){return(x.employee&&x.employee===name)||(!x.employee&&j===i)})||{};
   return{from_date:r.work_from_date||'',from_time:r.work_from_time||'',to_date:r.work_to_date||'',to_time:r.work_to_time||''}
@@ -1529,6 +1535,16 @@ function currentEmployeeSystems(){return[].slice.call(document.querySelectorAll(
   var emp=block.querySelector('.emp').value,group=(block.querySelector('.breakgroup')||{}).value||'A',days=[].slice.call(block.querySelectorAll('.empdayrow')).map(function(r){return{date:r.dataset.date,system:r.querySelector('select').value,breaks:dayBreakSnapshot(r,group)}});
   return{employee:emp,break_group:group,days:days,work_from_date:block.querySelector('.pfromd')?block.querySelector('.pfromd').value:'',work_from_time:block.querySelector('.pfromt')?block.querySelector('.pfromt').value:'',work_to_date:block.querySelector('.ptod')?block.querySelector('.ptod').value:'',work_to_time:block.querySelector('.ptot')?block.querySelector('.ptot').value:'',pauses:collectPauses(block)}
 })}
+function participationChanged(el){
+  var block=el&&el.closest?el.closest('.empblock'):el;
+  if(!block)return;
+  var existing=[].slice.call(block.querySelectorAll('.empdayrow')).map(function(r){
+    var g=(block.querySelector('.breakgroup')||{}).value||'A';
+    return{date:r.dataset.date,system:r.querySelector('select').value,breaks:dayBreakSnapshot(r,g)}
+  });
+  updatePartStatus(block);
+  renderEmpDayBox(block,existing)
+}
 function smartPartDate(kind){
   var today=localDate(new Date()),sd=$('sd').value,ed=$('ed').value||sd;
   if(sd&&today>=sd&&today<=ed)return today;
@@ -1547,14 +1563,14 @@ function toggleParticipation(btn,kind){
     if(!d.value)d.value=smartPartDate(kind);
     if(!t.value)t.value=smartPartTime()
   }
-  updatePartStatus(block)
+  participationChanged(block)
 }
 function clearParticipation(btn,kind){
   var block=btn.closest('.empblock'),box=block.querySelector(kind==='from'?'.frompart':'.topart');
   if(!box)return;
   box.querySelectorAll('input').forEach(function(x){x.value=''});
   box.classList.remove('open');
-  updatePartStatus(block)
+  participationChanged(block)
 }
 function updatePartStatus(block){
   var fd=block.querySelector('.pfromd').value,ft=block.querySelector('.pfromt').value,td=block.querySelector('.ptod').value,tt=block.querySelector('.ptot').value,a=[];
@@ -1599,6 +1615,10 @@ function renderEmpDayBox(block,existing){
   var box=block.querySelector('.empsystems'),a=$('sd').value&&new Date($('sd').value+'T00:00'),b=$('ed').value?new Date($('ed').value+'T00:00'):a;
   if(!a){box.innerHTML='<span class="muted">Ustaw datę rozpoczęcia.</span>';return}
   if(b<a){box.innerHTML='<span class="error">Błędny zakres dat.</span>';return}
+  var fd=block.querySelector('.pfromd')&&block.querySelector('.pfromd').value,td=block.querySelector('.ptod')&&block.querySelector('.ptod').value;
+  if(fd){var fa=new Date(fd+'T00:00');if(fa>a)a=fa}
+  if(td){var tb=new Date(td+'T00:00');if(tb<b)b=tb}
+  if(b<a){box.innerHTML='<span class="muted">Brak dni pracy w wybranym zakresie udziału.</span>';return}
   var prev={};(existing||[]).forEach(function(x){prev[x.date]=x});box.innerHTML='';
   for(var d=new Date(a);d<=b;d.setDate(d.getDate()+1)){
     var ds=localDate(d),autoFree=isAutoFreeDay(d),sat=isSaturday(d),saved=prev[ds],sy;
@@ -1629,7 +1649,7 @@ function openEntry(id){
   var cs=e.corrections||[],es=Array.isArray(e.employee_systems)&&e.employee_systems.length?e.employee_systems:(e.employees||[]).map(function(n){return{employee:n,days:e.day_systems||[]}});
   var count=HALL==='AUTO'?1:Math.min(MAX_EMP,Math.max(DEFAULT_EMP,(e.employees||[]).length,es.length));
   $('empsel').innerHTML=Array.from({length:count},function(_,i){return employeeBlockHtml(i,e,cs)}).join('');
-  renderAllEmpDayBoxes(es);restoreBreakGroups(es);restoreParticipationControls(es);restorePauseControls(es);renumberEmployeeBlocks();
+  restoreParticipationControls(es);renderAllEmpDayBoxes(es);restoreBreakGroups(es);restorePauseControls(es);renumberEmployeeBlocks();
   $('sd').onchange=refreshEmpDays;$('ed').onchange=refreshEmpDays;$('modal').classList.add('open')
 }
 function quickNowParts(){var d=new Date();return{date:localDate(d),time:String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')}}
