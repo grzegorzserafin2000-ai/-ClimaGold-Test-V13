@@ -235,6 +235,7 @@
 /* FINAL v31: sekcja centrali dzielonej ma rozmiar zwykłego pola i złote wyróżnienie */
 /* FINAL v32: filtry rodzaju centrali i pracownika w Ewidencji */
 /* FINAL v33: filtr pracownika w Statystykach */
+/* FINAL v34: Wszystkie resetuje wszystkie filtry Ewidencji */
 .statscharts{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
 .statscharts .wide{grid-column:1/-1}
 .chartlegend{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin:2px 0 12px}
@@ -985,7 +986,14 @@ function syncEntryFilterButtons(){
 }
 function setEntryFilter(mode){
   ENTRY_FILTER=mode==='ongoing'?'ongoing':'all';
-  if($('entryMonth'))$('entryMonth').value='';
+  if(mode==='all'){
+    if($('entryMonth'))$('entryMonth').value='';
+    if($('entryTypeFilter'))$('entryTypeFilter').value='';
+    if($('entryEmployeeFilter'))$('entryEmployeeFilter').value='';
+    if($('search'))$('search').value='';
+  }else{
+    if($('entryMonth'))$('entryMonth').value='';
+  }
   syncEntryFilterButtons();
   renderEntries()
 }
