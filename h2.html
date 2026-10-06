@@ -588,6 +588,8 @@ th{background:#f6f8f9}
 /* FINAL v40: systemy pracy tylko dla dni faktycznego udziału pracownika */
 /* FINAL v41: naprawione wyświetlanie pracowników w Ustawienia → Grupy */
 /* FINAL v42: Ewidencja bez A/B w systemie + godzina startu zamiast 'w toku' */
+/* FINAL v43: W TOKU pozostaje widoczne + godzina startu */
+/* FINAL v44: zakończone wpisy mają widoczny status ZAKOŃCZONE */
 .groupbadge{display:flex;align-items:center;min-height:39px;padding:9px 11px;border:1px solid #e6c66f;border-radius:9px;background:#fff7d8;color:#60470d;font-weight:800}
 .groupassign{display:grid;grid-template-columns:minmax(180px,1fr) 130px;gap:10px;align-items:center;padding:7px 0;border-bottom:1px solid var(--line)}
 .groupassign:last-child{border-bottom:0}
@@ -1543,7 +1545,7 @@ function renderEntries(){
     return textOk&&monthOk&&statusOk&&typeOk&&employeeOk
   }).map(function(e){
     var ac=ME.role==='viewer'?'':'<button class="btn secondary" onclick="openEntry('+e.id+')">Edytuj</button> '+(ME.role==='admin'?'<button class="btn danger" onclick="delEntry('+e.id+')">Usuń</button>':'');
-    return'<tr class="mark-'+(e.mark_color||'none')+'"><td class="actioncol">'+ac+'</td><td>'+esc(e.start_date)+(e.end_date?' → '+esc(e.end_date):' · start '+esc(e.start_time||'—'))+'</td><td><b>'+esc(e.number)+'</b></td><td>'+esc(entryDeviceLabel(e))+'</td><td>'+esc((e.employees||[]).join(', '))+'</td><td>'+esc(systemSummary(e))+'</td><td>'+esc(timeSummary(e))+'</td><td>'+esc(notesWithoutSection(e.notes))+'</td></tr>'
+    return'<tr class="mark-'+(e.mark_color||'none')+'"><td class="actioncol">'+ac+'</td><td>'+esc(e.start_date)+(e.end_date?' → '+esc(e.end_date)+' · ZAKOŃCZONE':' · W TOKU · start '+esc(e.start_time||'—'))+'</td><td><b>'+esc(e.number)+'</b></td><td>'+esc(entryDeviceLabel(e))+'</td><td>'+esc((e.employees||[]).join(', '))+'</td><td>'+esc(systemSummary(e))+'</td><td>'+esc(timeSummary(e))+'</td><td>'+esc(notesWithoutSection(e.notes))+'</td></tr>'
   }).join('')
 }
 function opts(a,v){return'<option value=""></option>'+a.map(function(x){return'<option'+(x===v?' selected':'')+'>'+esc(x)+'</option>'}).join('')}
