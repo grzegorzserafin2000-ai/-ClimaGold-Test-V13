@@ -593,6 +593,7 @@ th{background:#f6f8f9}
 /* FINAL v45: uproszczony opis ustawień przerw */
 /* FINAL v46: Montaż H1 ma wskazówkę o przypisaniu pracowników do Grup A/B */
 /* FINAL v47: wybór dzisiejszego systemu pracy na Dashboardzie */
+/* FINAL v48: bez Grup A/B + status ZATRZYMANA + filtry ZATRZYMANE/ZAKOŃCZONE */
 .groupbadge{display:flex;align-items:center;min-height:39px;padding:9px 11px;border:1px solid #e6c66f;border-radius:9px;background:#fff7d8;color:#60470d;font-weight:800}
 .groupassign{display:grid;grid-template-columns:minmax(180px,1fr) 130px;gap:10px;align-items:center;padding:7px 0;border-bottom:1px solid var(--line)}
 .groupassign:last-child{border-bottom:0}
@@ -979,7 +980,7 @@ th{background:#f6f8f9}
   </div>
 </section>
 
-<section id="entries" class="view"><div class="toolbar"><button id="addbtn" class="btn" onclick="openEntry()">+ Dodaj wpis</button><input id="entryMonth" type="month" onchange="entryMonthChanged()" style="padding:10px;border:1px solid var(--line);border-radius:9px"><button id="entryAllBtn" class="btn secondary entryfilter active" onclick="setEntryFilter('all')">Wszystkie</button><button id="entryOngoingBtn" class="btn secondary entryfilter" onclick="setEntryFilter('ongoing')">W TOKU</button><select id="entryTypeFilter" onchange="renderEntries()" class="entryselect"><option value="">Wszystkie rodzaje central</option></select><select id="entryEmployeeFilter" onchange="renderEntries()" class="entryselect"><option value="">Wszyscy pracownicy</option></select><input id="search" placeholder="Szukaj nr, pracownika lub typu" oninput="renderEntries()" style="padding:10px;border:1px solid var(--line);border-radius:9px;min-width:240px"></div><div class="tablewrap"><table><thead><tr><th class="actioncol">Akcje</th><th>Data</th><th>Nr</th><th>Typ</th><th>Pracownicy</th><th>System</th><th>Czas</th><th>Uwagi</th></tr></thead><tbody id="et"></tbody></table></div></section>
+<section id="entries" class="view"><div class="toolbar"><button id="addbtn" class="btn" onclick="openEntry()">+ Dodaj wpis</button><input id="entryMonth" type="month" onchange="entryMonthChanged()" style="padding:10px;border:1px solid var(--line);border-radius:9px"><button id="entryAllBtn" class="btn secondary entryfilter active" onclick="setEntryFilter('all')">Wszystkie</button><button id="entryOngoingBtn" class="btn secondary entryfilter" onclick="setEntryFilter('ongoing')">W TOKU</button><button id="entryStoppedBtn" class="btn secondary entryfilter" onclick="setEntryFilter('stopped')">ZATRZYMANE</button><button id="entryDoneBtn" class="btn secondary entryfilter" onclick="setEntryFilter('done')">ZAKOŃCZONE</button><select id="entryTypeFilter" onchange="renderEntries()" class="entryselect"><option value="">Wszystkie rodzaje central</option></select><select id="entryEmployeeFilter" onchange="renderEntries()" class="entryselect"><option value="">Wszyscy pracownicy</option></select><input id="search" placeholder="Szukaj nr, pracownika lub typu" oninput="renderEntries()" style="padding:10px;border:1px solid var(--line);border-radius:9px;min-width:240px"></div><div class="tablewrap"><table><thead><tr><th class="actioncol">Akcje</th><th>Data</th><th>Nr</th><th>Typ</th><th>Pracownicy</th><th>System</th><th>Czas</th><th>Uwagi</th></tr></thead><tbody id="et"></tbody></table></div></section>
 <section id="stats" class="view"><div class="toolbar"><input id="month" type="month" onchange="renderStats()" style="padding:9px"><select id="statType" onchange="renderStats()" style="padding:9px"></select><select id="statEmployee" onchange="renderStats()" style="padding:9px"><option value="">Wszyscy pracownicy</option></select><button class="btn secondary" onclick="exportStatsCSV()">Eksport CSV</button><button class="btn secondary" onclick="exportStatsXLS()">Eksport XLS</button></div><div class="cards"><div class="card"><div class="muted">Zakończone centrale</div><div id="sk1" class="kpi">0</div></div><div class="card"><div class="muted">Roboczogodziny łącznie</div><div id="sk2" class="kpi">0:00</div></div></div><div class="card statsnote" style="margin-top:14px"><h3>Top 3 — najkrótszy średni czas pełnej pracy</h3><div id="rank"></div><div class="muted" style="margin-top:10px"><b>Ranking i średnia liczone są tylko z pełnych prac.</b> Każdy pracownik będący przy centrali od początku do końca dostaje do rankingu ten sam czas wykonania centrali, niezależnie od systemu 8 h / 10 h. Indywidualny system nadal służy do liczenia roboczogodzin. Dołączenie później lub wcześniejsze zakończenie jest udziałem i nie wpływa na miejsce.</div></div><div class="statscharts"><div class="card"><h3>Pełne prace / udziały</h3><div class="chartlegend"><span><i class="lg-full"></i> Pełne prace</span><span><i class="lg-part"></i> Udziały</span></div><div id="chartWorkType" class="chartbox"></div></div><div class="card"><h3>Czas pełnych prac / udziałów</h3><div class="chartlegend"><span><i class="lg-full"></i> Czas pełnych</span><span><i class="lg-part"></i> Czas udziałów</span></div><div id="chartTimeMix" class="chartbox"></div></div><div class="card wide"><h3>Średni czas pełnej pracy</h3><div class="muted" style="margin-bottom:10px">Wspólny czas wykonania centrali — system 8 h / 10 h nie zmienia wyniku rankingu.</div><div id="chartAvgFull" class="chartbox"></div></div></div><div class="tablewrap" style="margin-top:14px"><table><thead><tr><th>Miejsce</th><th>Pracownik</th><th>Wszystkie prace</th><th>Pełne prace</th><th>Udziały</th><th>Dołączył później</th><th>Zakończył wcześniej</th><th>Czas łącznie</th><th>Czas pełnych</th><th>Czas udziałów</th><th>Średnia pełnej pracy</th></tr></thead><tbody id="st"></tbody></table></div></section>
 <section id="ratings" class="view"><div class="card"><div style="display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap"><div><h3 style="margin:0">Ocena kompetencji</h3><div class="muted">„-” = ocena nieustalona</div></div><button id="saveratings" class="btn" onclick="saveRatings()">Zapisz oceny</button></div></div><div class="tablewrap" style="margin-top:14px"><table><thead><tr><th>Miejsce</th><th>Pracownik</th><th>Wiedza i kompetencje</th><th>Wydajność<br>(szybkość pracy)</th><th>Dokładność<br>(bezbłędność)</th><th>Jakość pracy<br>(estetyka)</th><th>Wynik</th></tr></thead><tbody id="rt"></tbody></table></div></section>
 <section id="settings" class="view">
@@ -1009,7 +1010,7 @@ th{background:#f6f8f9}
     </div>
 
     <div class="card settingpanel" id="breaksPanel">
-      <div class="settingspanelhead"><div><h3>Planowe przerwy pracowników</h3><div class="muted">Rozwiń system pracy i wybierz godziny przerwy z pól zegara. Możesz dodać kolejne przerwy. Najpierw przypisz pracowników do Grupy A lub Grupy B w zakładce „Grupy”.</div></div></div>
+      <div class="settingspanelhead"><div><h3>Planowe przerwy pracowników</h3><div class="muted">Rozwiń system pracy i wybierz godziny przerwy z pól zegara. Możesz dodać kolejne przerwy.</div></div></div>
       <div id="systemBreakSettings"></div>
     </div>
 
@@ -1100,7 +1101,7 @@ function employeeBlockHtml(i,e,cs){
   var lab=MAX_EMP===1?'Pracownik':'Pracownik '+(i+1);
   var remove='<button type="button" class="btn danger empremove" onclick="removeEmployeeBlock(this)">Usuń tego pracownika</button>';
   var groupUi=hasBreakGroups()?'<div class="field"><label>Grupa przerw</label><div class="groupbadge">Grupa A</div></div>':'';
-  return'<div class="empblock" data-slot="'+i+'"><div class="empgrid"><div class="field"><label>'+lab+'</label><select class="emp" onchange="employeeChanged(this)">'+opts(D.settings.employees,(e.employees||[])[i]||'')+'</select></div>'+groupUi+'<input class="breakgroup" type="hidden" value="A"><input class="corr" type="hidden" value="'+(cs[i]||0)+'"></div><div class="participation"><div class="partbuttons"><button type="button" class="btn secondary" onclick="toggleParticipation(this,\'from\')">Dołącza do pracy</button><button type="button" class="btn secondary" onclick="toggleParticipation(this,\'to\')">Kończy pracę</button></div><div class="partfields frompart"><b class="partlabel">Dołącza</b><input class="pfromd" type="date" onchange="updatePartStatus(this.closest(\'.empblock\'))"><input class="pfromt" type="time" onchange="updatePartStatus(this.closest(\'.empblock\'))"><button type="button" class="btn secondary" onclick="clearParticipation(this,\'from\')">Usuń</button></div><div class="partfields topart"><b class="partlabel">Kończy</b><input class="ptod" type="date" onchange="updatePartStatus(this.closest(\'.empblock\'))"><input class="ptot" type="time" onchange="updatePartStatus(this.closest(\'.empblock\'))"><button type="button" class="btn secondary" onclick="clearParticipation(this,\'to\')">Usuń</button></div><div class="muted partstatus">Bez zmian = pracuje od początku do końca.</div></div><div class="breakgroupnote">Planowe przerwy — Grupa A</div><div class="pausebox"><div class="empname">Dodatkowe przerwy / wstrzymania</div><div class="pausebuttons"><button type="button" class="btn secondary" onclick="pauseWork(this)">Wstrzymał pracę</button><button type="button" class="btn secondary" onclick="resumeWork(this)">Rozpoczął pracę</button></div><div class="pauselist"></div><div class="muted pausestatus">Brak przerw.</div></div><div class="empname">System pracy tego pracownika</div><div class="muted" style="margin-bottom:6px">Pokazywane są tylko dni, w których ten pracownik uczestniczy w pracy przy centrali.</div><div class="empsystems"></div>'+remove+'</div>'
+  return'<div class="empblock" data-slot="'+i+'"><div class="empgrid"><div class="field"><label>'+lab+'</label><select class="emp" onchange="employeeChanged(this)">'+opts(D.settings.employees,(e.employees||[])[i]||'')+'</select></div>'+groupUi+'<input class="breakgroup" type="hidden" value="A"><input class="corr" type="hidden" value="'+(cs[i]||0)+'"></div><div class="participation"><div class="partbuttons"><button type="button" class="btn secondary" onclick="toggleParticipation(this,\'from\')">Dołącza do pracy</button><button type="button" class="btn secondary" onclick="toggleParticipation(this,\'to\')">Kończy pracę</button></div><div class="partfields frompart"><b class="partlabel">Dołącza</b><input class="pfromd" type="date" onchange="updatePartStatus(this.closest(\'.empblock\'))"><input class="pfromt" type="time" onchange="updatePartStatus(this.closest(\'.empblock\'))"><button type="button" class="btn secondary" onclick="clearParticipation(this,\'from\')">Usuń</button></div><div class="partfields topart"><b class="partlabel">Kończy</b><input class="ptod" type="date" onchange="updatePartStatus(this.closest(\'.empblock\'))"><input class="ptot" type="time" onchange="updatePartStatus(this.closest(\'.empblock\'))"><button type="button" class="btn secondary" onclick="clearParticipation(this,\'to\')">Usuń</button></div><div class="muted partstatus">Bez zmian = pracuje od początku do końca.</div></div><div class="breakgroupnote">Planowe przerwy</div><div class="pausebox"><div class="empname">Dodatkowe przerwy / wstrzymania</div><div class="pausebuttons"><button type="button" class="btn secondary" onclick="pauseWork(this)">Wstrzymał pracę</button><button type="button" class="btn secondary" onclick="resumeWork(this)">Rozpoczął pracę</button></div><div class="pauselist"></div><div class="muted pausestatus">Brak przerw.</div></div><div class="empname">System pracy tego pracownika</div><div class="muted" style="margin-bottom:6px">Pokazywane są tylko dni, w których ten pracownik uczestniczy w pracy przy centrali.</div><div class="empsystems"></div>'+remove+'</div>'
 }
 function renumberEmployeeBlocks(){
   [].slice.call(document.querySelectorAll('.empblock')).forEach(function(block,i){
@@ -1133,7 +1134,7 @@ function removeEmployeeBlock(btn){
 }
 
 
-function hasBreakGroups(){return HALL==='M1'}
+function hasBreakGroups(){return false}
 function ensureBreakSettings(){
   D.settings.break_groups=hasBreakGroups()?['A','B']:['A'];
   if(!D.settings.system_breaks||typeof D.settings.system_breaks!=='object'||Array.isArray(D.settings.system_breaks))D.settings.system_breaks={};
@@ -1584,7 +1585,7 @@ async function saveTodaySystem(system){
 
 function renderDashboardTest(){
   var entries=D.entries||[],today=localDate(new Date());
-  var ongoing=entries.filter(function(e){return !e.end_date});
+  var ongoing=entries.filter(function(e){return !e.end_date&&!entryIsStopped(e)});
   var doneToday=entries.filter(function(e){return e.end_date===today});
   var workers={};
   ongoing.forEach(function(e){
@@ -1640,17 +1641,65 @@ function renderAll(){
   if(!$('month').value)$('month').value=new Date().toISOString().slice(0,7);
   renderStats()
 }
+
+function openPauseForEmployee(e,name,i){
+  var a=employeePauseList(e,name,i);
+  for(var j=a.length-1;j>=0;j--){
+    var p=a[j]||{};
+    if(p.from_date&&p.from_time&&!(p.to_date&&p.to_time))return p
+  }
+  return null
+}
+function employeeIsActiveNow(e,name,i){
+  var p=employeeParticipation(e,name,i),nowDate=localDate(new Date()),nowTime=pauseNowTime(),nowKey=nowDate+'T'+nowTime;
+  if(p.from_date&&p.from_time&&p.from_date+'T'+p.from_time>nowKey)return false;
+  if(p.to_date&&p.to_time&&p.to_date+'T'+p.to_time<=nowKey)return false;
+  return true
+}
+function entryStoppedInfo(e){
+  if(e.end_date)return null;
+  var emps=e.employees||[],active=[];
+  emps.forEach(function(name,i){
+    if(name&&employeeIsActiveNow(e,name,i))active.push({name:name,i:i})
+  });
+  if(!active.length)return null;
+  var opens=active.map(function(x){return openPauseForEmployee(e,x.name,x.i)}).filter(Boolean);
+  if(opens.length!==active.length)return null;
+  opens.sort(function(a,b){
+    return String(a.from_date||'')+'T'+String(a.from_time||'')>String(b.from_date||'')+'T'+String(b.from_time||'')?1:-1
+  });
+  return opens[opens.length-1]||null
+}
+function entryIsStopped(e){return !!entryStoppedInfo(e)}
+function entryStatusText(e){
+  if(e.end_date)return'ZAKOŃCZONE';
+  var p=entryStoppedInfo(e);
+  if(p)return'ZATRZYMANA'+(p.from_time?' · od '+p.from_time:'')+' · start '+(e.start_time||'—');
+  return'W TOKU · start '+(e.start_time||'—')
+}
+
 var ENTRY_FILTER='all';
 function syncEntryFilterButtons(){
   if($('entryAllBtn'))$('entryAllBtn').classList.toggle('active',ENTRY_FILTER==='all');
+  var entries=D.entries||[];
+  var ongoing=entries.filter(function(e){return !e.end_date&&!entryIsStopped(e)}).length;
+  var stopped=entries.filter(function(e){return !e.end_date&&entryIsStopped(e)}).length;
+  var done=entries.filter(function(e){return !!e.end_date}).length;
   if($('entryOngoingBtn')){
     $('entryOngoingBtn').classList.toggle('active',ENTRY_FILTER==='ongoing');
-    var n=(D.entries||[]).filter(function(e){return !e.end_date}).length;
-    $('entryOngoingBtn').textContent='W TOKU ('+n+')';
+    $('entryOngoingBtn').textContent='W TOKU ('+ongoing+')';
+  }
+  if($('entryStoppedBtn')){
+    $('entryStoppedBtn').classList.toggle('active',ENTRY_FILTER==='stopped');
+    $('entryStoppedBtn').textContent='ZATRZYMANE ('+stopped+')';
+  }
+  if($('entryDoneBtn')){
+    $('entryDoneBtn').classList.toggle('active',ENTRY_FILTER==='done');
+    $('entryDoneBtn').textContent='ZAKOŃCZONE ('+done+')';
   }
 }
 function setEntryFilter(mode){
-  ENTRY_FILTER=mode==='ongoing'?'ongoing':'all';
+  ENTRY_FILTER=['ongoing','stopped','done'].indexOf(mode)>=0?mode:'all';
   if(mode==='all'){
     if($('entryMonth'))$('entryMonth').value='';
     if($('entryTypeFilter'))$('entryTypeFilter').value='';
@@ -1677,13 +1726,16 @@ function renderEntries(){
     var text=((e.number||'')+' '+entryDeviceLabel(e)+' '+(e.employees||[]).join(' ')+' '+notesWithoutSection(e.notes||'')).toLowerCase();
     var textOk=text.indexOf(q)>=0;
     var monthOk=!m||((e.start_date||'')<=last&&(!(e.end_date)||e.end_date>=first));
-    var statusOk=ENTRY_FILTER!=='ongoing'||!e.end_date;
+    var statusOk=ENTRY_FILTER==='all'||
+      (ENTRY_FILTER==='ongoing'&&!e.end_date&&!entryIsStopped(e))||
+      (ENTRY_FILTER==='stopped'&&!e.end_date&&entryIsStopped(e))||
+      (ENTRY_FILTER==='done'&&!!e.end_date);
     var typeOk=!typeFilter||e.device_type===typeFilter;
     var employeeOk=!employeeFilter||(e.employees||[]).indexOf(employeeFilter)>=0;
     return textOk&&monthOk&&statusOk&&typeOk&&employeeOk
   }).map(function(e){
     var ac=ME.role==='viewer'?'':'<button class="btn secondary" onclick="openEntry('+e.id+')">Edytuj</button> '+(ME.role==='admin'?'<button class="btn danger" onclick="delEntry('+e.id+')">Usuń</button>':'');
-    return'<tr class="mark-'+(e.mark_color||'none')+'"><td class="actioncol">'+ac+'</td><td>'+esc(e.start_date)+(e.end_date?' → '+esc(e.end_date)+' · ZAKOŃCZONE':' · W TOKU · start '+esc(e.start_time||'—'))+'</td><td><b>'+esc(e.number)+'</b></td><td>'+esc(entryDeviceLabel(e))+'</td><td>'+esc((e.employees||[]).join(', '))+'</td><td>'+esc(systemSummary(e))+'</td><td>'+esc(timeSummary(e))+'</td><td>'+esc(notesWithoutSection(e.notes))+'</td></tr>'
+    return'<tr class="mark-'+(e.mark_color||'none')+'"><td class="actioncol">'+ac+'</td><td>'+esc(e.start_date)+(e.end_date?' → '+esc(e.end_date):'')+' · '+esc(entryStatusText(e))+'</td><td><b>'+esc(e.number)+'</b></td><td>'+esc(entryDeviceLabel(e))+'</td><td>'+esc((e.employees||[]).join(', '))+'</td><td>'+esc(systemSummary(e))+'</td><td>'+esc(timeSummary(e))+'</td><td>'+esc(notesWithoutSection(e.notes))+'</td></tr>'
   }).join('')
 }
 function opts(a,v){return'<option value=""></option>'+a.map(function(x){return'<option'+(x===v?' selected':'')+'>'+esc(x)+'</option>'}).join('')}
