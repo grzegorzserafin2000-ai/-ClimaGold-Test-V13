@@ -597,6 +597,7 @@ th{background:#f6f8f9}
 /* FINAL v49: przycisk ZAKOŃCZONE bez licznika */
 /* FINAL v50: Statystyki — ranking ilości i testowy wynik ilość + czas bez norm */
 /* FINAL v51: Statystyki podzielone na kategorie z osobnymi tabelami i wykresami */
+/* FINAL v52: Podsumowanie / Czas / Ilość i czas — bez punktów, z ikonami i ilustracjami */
 .groupbadge{display:flex;align-items:center;min-height:39px;padding:9px 11px;border:1px solid #e6c66f;border-radius:9px;background:#fff7d8;color:#60470d;font-weight:800}
 .groupassign{display:grid;grid-template-columns:minmax(180px,1fr) 130px;gap:10px;align-items:center;padding:7px 0;border-bottom:1px solid var(--line)}
 .groupassign:last-child{border-bottom:0}
@@ -984,6 +985,126 @@ th{background:#f6f8f9}
   .statstab{width:100%;padding:10px 8px}
 }
 
+
+/* FINAL v52: proste i czytelne kategorie statystyk */
+.statstabbar{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:10px;
+  margin:14px 0;
+}
+.statstab{
+  appearance:none;
+  border:1px solid var(--line);
+  background:#fff;
+  color:var(--ink);
+  border-radius:14px;
+  padding:11px 12px;
+  font-weight:800;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  text-align:left;
+  min-height:68px;
+  box-shadow:0 1px 3px rgba(0,0,0,.03);
+  transition:.16s ease;
+}
+.statstab:hover{transform:translateY(-1px);border-color:#e4a650}
+.statstab.active{
+  background:#fff5e8;
+  border-color:#e58a1f;
+  box-shadow:0 0 0 2px rgba(229,138,31,.10);
+}
+.statstabicon{
+  width:40px;height:40px;flex:0 0 40px;
+  display:flex;align-items:center;justify-content:center;
+  border-radius:11px;background:#f2f4f7;color:#485466;
+}
+.statstabicon svg{width:24px;height:24px;fill:currentColor}
+.statstab.active .statstabicon{background:#e58a1f;color:#fff}
+.statstab b{display:block;font-size:14px}
+.statstab small{display:block;color:var(--muted);font-size:11px;margin-top:2px}
+.statspanel{display:none}
+.statspanel.active{display:block}
+
+.statcategoryhero{
+  min-height:138px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:18px;
+  padding:18px 20px;
+  border-radius:16px;
+  background:linear-gradient(135deg,#fff8ed,#ffffff);
+  border:1px solid #efd7b6;
+  margin-bottom:14px;
+  overflow:hidden;
+}
+.statcategoryhero h3{margin:2px 0 6px;font-size:19px}
+.statcategoryhero p{margin:0;color:var(--muted);max-width:650px;line-height:1.45}
+.statcategoryeyebrow{font-size:11px;font-weight:900;letter-spacing:.08em;color:#b7650a}
+.statillustration{
+  width:180px;height:110px;flex:0 0 180px;
+  color:#e58a1f;
+  opacity:.9;
+}
+.statillustration svg{width:100%;height:100%}
+.statillustration rect,.statillustration circle{fill:#ffe6bf;stroke:#d77d18;stroke-width:3}
+.statillustration path{stroke:#d77d18}
+.statillustration.time circle{fill:#fff0d8}
+.statillustration.qty rect{fill:#fff0d8}
+.statillustration.qty circle{fill:#ffe0ae}
+
+.statkpicard{display:flex;align-items:center;gap:12px}
+.statkpiicon{
+  width:42px;height:42px;border-radius:12px;
+  background:#fff1db;color:#a75d09;
+  display:flex;align-items:center;justify-content:center;
+  font-size:21px;font-weight:900;
+}
+.statscharts.onecol{grid-template-columns:1fr}
+
+.qtytimecontrols{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:14px;
+}
+.qtytimecontrols h3{margin:0 0 3px}
+.qtytimebuttons{display:flex;gap:8px;flex-wrap:wrap}
+.qtysort.active{
+  background:#e58a1f !important;
+  border-color:#e58a1f !important;
+  color:#fff !important;
+}
+.qtytimebest{
+  display:inline-block;
+  padding:4px 8px;
+  border-radius:999px;
+  background:#edf8f0;
+  color:#28713d;
+  font-size:11px;
+  font-weight:900;
+  margin-left:6px;
+}
+.statssmallnote{margin-top:10px;line-height:1.45;font-size:12px}
+
+@media(max-width:800px){
+  .statcategoryhero{min-height:0}
+  .statillustration{width:130px;height:80px;flex-basis:130px}
+  .qtytimecontrols{align-items:stretch;flex-direction:column}
+}
+@media(max-width:620px){
+  .statstabbar{grid-template-columns:1fr}
+  .statstab{min-height:58px}
+  .statillustration{display:none}
+  .statcategoryhero{padding:15px}
+  .qtytimebuttons{display:grid;grid-template-columns:1fr 1fr}
+  .qtytimebuttons .btn{width:100%}
+}
+
 </style></head><body>
 <div id="login" class="login"><div class="box"><button type="button" class="btn secondary" onclick="location.href='./index.html'" style="width:100%;margin:0 0 14px">← Wróć do wyboru działu</button><div class="brand"><span class="brandmark" aria-hidden="true"><i></i><i></i><i></i></span><span class="brandtext"><span class="clima">Clima</span><span class="gold">Gold</span></span></div><h2>Montaż H1</h2><div class="hint">Wspólna baza online</div><div class="field"><label>Login</label><input id="lu" value="brygadzista" autocomplete="username"></div><div class="field"><label>Hasło</label><input id="lp" type="password" autocomplete="current-password"></div><button class="btn" onclick="doLogin()">Zaloguj</button><div id="le" class="error"></div></div></div>
 <div id="app" class="app"><aside class="side"><div class="brand"><span class="brandmark" aria-hidden="true"><i></i><i></i><i></i></span><span class="brandtext"><span class="clima">Clima</span><span class="gold">Gold</span></span></div><span class="hall">MONTAŻ H1</span><div class="nav">
@@ -1077,17 +1198,49 @@ th{background:#f6f8f9}
   </div>
 
   <div class="statstabbar">
-    <button class="statstab active" data-stat-tab="summary" onclick="showStatsTab('summary',this)">Podsumowanie</button>
-    <button class="statstab" data-stat-tab="time" onclick="showStatsTab('time',this)">Czas</button>
-    <button class="statstab" data-stat-tab="quantity" onclick="showStatsTab('quantity',this)">Ilość</button>
-    <button class="statstab" data-stat-tab="combined" onclick="showStatsTab('combined',this)">Wynik łączny</button>
+    <button class="statstab active" data-stat-tab="summary" onclick="showStatsTab('summary',this)">
+      <span class="statstabicon">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V9h4v10H4Zm6 0V5h4v14h-4Zm6 0v-7h4v7h-4Z"/></svg>
+      </span>
+      <span><b>Podsumowanie</b><small>Ogólny obraz pracy</small></span>
+    </button>
+    <button class="statstab" data-stat-tab="time" onclick="showStatsTab('time',this)">
+      <span class="statstabicon">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9 9.01 9.01 0 0 0-9-9Zm1 10h-5v-2h3V6h2Z"/></svg>
+      </span>
+      <span><b>Czas</b><small>Kto robi najszybciej</small></span>
+    </button>
+    <button class="statstab" data-stat-tab="qtytime" onclick="showStatsTab('qtytime',this)">
+      <span class="statstabicon">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h8v6H3V5Zm10 0h8v6h-8V5ZM3 13h8v6H3v-6Zm13 0a5 5 0 1 1-5 5 5.006 5.006 0 0 1 5-5Zm.8 2.2h-1.6V18l2.2 1.3.8-1.4-1.4-.8Z"/></svg>
+      </span>
+      <span><b>Ilość i czas</b><small>Sztuki + średni czas</small></span>
+    </button>
   </div>
 
   <div class="statspanel active" id="statsPanelSummary">
-    <div class="cards">
-      <div class="card"><div class="muted">Zakończone centrale</div><div id="sk1" class="kpi">0</div></div>
-      <div class="card"><div class="muted">Roboczogodziny łącznie</div><div id="sk2" class="kpi">0:00</div></div>
+    <div class="statcategoryhero">
+      <div>
+        <div class="statcategoryeyebrow">PODSUMOWANIE</div>
+        <h3>Najważniejsze dane w jednym miejscu</h3>
+        <p>Szybki podgląd liczby zakończonych central, roboczogodzin i udziału pracowników.</p>
+      </div>
+      <div class="statillustration" aria-hidden="true">
+        <svg viewBox="0 0 180 110">
+          <rect x="13" y="69" width="28" height="27" rx="5"/>
+          <rect x="52" y="48" width="28" height="48" rx="5"/>
+          <rect x="91" y="28" width="28" height="68" rx="5"/>
+          <rect x="130" y="56" width="28" height="40" rx="5"/>
+          <path d="M20 35c23 4 36 1 55-10 19-11 35-8 55 1 10 4 19 3 31-4" fill="none" stroke-width="6" stroke-linecap="round"/>
+        </svg>
+      </div>
     </div>
+
+    <div class="cards">
+      <div class="card statkpicard"><div class="statkpiicon">✓</div><div><div class="muted">Zakończone centrale</div><div id="sk1" class="kpi">0</div></div></div>
+      <div class="card statkpicard"><div class="statkpiicon">◷</div><div><div class="muted">Roboczogodziny łącznie</div><div id="sk2" class="kpi">0:00</div></div></div>
+    </div>
+
     <div class="statscharts onecol">
       <div class="card">
         <h3>Czas pełnych prac / udziałów</h3>
@@ -1095,6 +1248,7 @@ th{background:#f6f8f9}
         <div id="chartTimeMix" class="chartbox"></div>
       </div>
     </div>
+
     <div class="tablewrap" style="margin-top:14px">
       <table>
         <thead><tr><th>Pracownik</th><th>Wszystkie prace</th><th>Pełne</th><th>Udziały</th><th>Czas łącznie</th></tr></thead>
@@ -1104,18 +1258,34 @@ th{background:#f6f8f9}
   </div>
 
   <div class="statspanel" id="statsPanelTime">
+    <div class="statcategoryhero">
+      <div>
+        <div class="statcategoryeyebrow">CZAS</div>
+        <h3>Kto ma najlepszy średni czas</h3>
+        <p>Ranking uwzględnia tylko pełne prace. Dołączenie później albo wcześniejsze zakończenie nie wpływa na miejsce.</p>
+      </div>
+      <div class="statillustration time" aria-hidden="true">
+        <svg viewBox="0 0 180 110">
+          <circle cx="90" cy="55" r="39"/>
+          <path d="M90 31v27l18 11" fill="none" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M63 18h54" fill="none" stroke-width="7" stroke-linecap="round"/>
+        </svg>
+      </div>
+    </div>
+
     <div class="card statsnote">
       <h3>Top 3 — najkrótszy średni czas pełnej pracy</h3>
       <div id="rank"></div>
-      <div class="muted" style="margin-top:10px"><b>Liczone są tylko pełne prace.</b> Udziały nie wpływają na ranking.</div>
     </div>
+
     <div class="statscharts onecol">
       <div class="card">
         <h3>Średni czas pełnej pracy</h3>
-        <div class="muted" style="margin-bottom:10px">Wspólny czas wykonania centrali — system 8 h / 10 h nie zmienia wyniku rankingu.</div>
+        <div class="muted" style="margin-bottom:10px">Krótszy czas = lepszy wynik.</div>
         <div id="chartAvgFull" class="chartbox"></div>
       </div>
     </div>
+
     <div class="tablewrap" style="margin-top:14px">
       <table>
         <thead><tr><th>Miejsce</th><th>Pracownik</th><th>Pełne prace</th><th>Czas pełnych</th><th>Średni czas</th></tr></thead>
@@ -1124,43 +1294,52 @@ th{background:#f6f8f9}
     </div>
   </div>
 
-  <div class="statspanel" id="statsPanelQuantity">
-    <div class="card statsnote">
-      <h3>Top 3 — ilość pełnych sztuk</h3>
-      <div id="rankQty"></div>
-      <div id="rankQtyNote" class="muted statssmallnote"></div>
-    </div>
-    <div class="statscharts onecol">
-      <div class="card">
-        <h3>Pełne prace / udziały</h3>
-        <div class="chartlegend"><span><i class="lg-full"></i> Pełne prace</span><span><i class="lg-part"></i> Udziały</span></div>
-        <div id="chartWorkType" class="chartbox"></div>
+  <div class="statspanel" id="statsPanelQtytime">
+    <div class="statcategoryhero">
+      <div>
+        <div class="statcategoryeyebrow">ILOŚĆ I CZAS</div>
+        <h3>Porównaj ile ktoś zrobił i w jakim czasie</h3>
+        <p>Bez punktów i bez wzoru 60/40. Widzisz prawdziwą liczbę pełnych sztuk i prawdziwy średni czas.</p>
+      </div>
+      <div class="statillustration qty" aria-hidden="true">
+        <svg viewBox="0 0 180 110">
+          <rect x="20" y="28" width="48" height="32" rx="6"/>
+          <rect x="20" y="68" width="48" height="25" rx="6"/>
+          <rect x="76" y="28" width="38" height="65" rx="6"/>
+          <circle cx="139" cy="63" r="29"/>
+          <path d="M139 47v18l12 8" fill="none" stroke-width="6" stroke-linecap="round"/>
+        </svg>
       </div>
     </div>
-    <div class="tablewrap" style="margin-top:14px">
-      <table>
-        <thead><tr><th>Miejsce</th><th>Pracownik</th><th>Pełne sztuki</th><th>Udziały</th><th>Wszystkie prace</th></tr></thead>
-        <tbody id="stQty"></tbody>
-      </table>
-    </div>
-  </div>
 
-  <div class="statspanel" id="statsPanelCombined">
-    <div class="card statsnote">
-      <h3>Wynik łączny — ilość + czas</h3>
-      <div id="rankCombined"></div>
-      <div id="rankCombinedNote" class="muted statssmallnote"></div>
-    </div>
-    <div class="statscharts onecol">
-      <div class="card">
-        <h3>Wynik punktowy</h3>
-        <div id="chartCombined" class="chartbox"></div>
+    <div class="card qtytimecontrols">
+      <div>
+        <h3>Jak chcesz ustawić kolejność?</h3>
+        <div class="muted">Tabela zawsze pokazuje jednocześnie sztuki i średni czas.</div>
+      </div>
+      <div class="qtytimebuttons">
+        <button id="qtySortBtn" class="btn qtysort active" onclick="setQtyTimeSort('qty')">Najwięcej sztuk</button>
+        <button id="timeSortBtn" class="btn secondary qtysort" onclick="setQtyTimeSort('time')">Najlepszy czas</button>
       </div>
     </div>
+
+    <div class="card statsnote">
+      <h3 id="qtyTimeRankTitle">Top 3 — najwięcej pełnych sztuk</h3>
+      <div id="rankQtyTime"></div>
+      <div id="rankQtyTimeNote" class="muted statssmallnote"></div>
+    </div>
+
+    <div class="statscharts onecol">
+      <div class="card">
+        <h3 id="qtyTimeChartTitle">Liczba pełnych sztuk</h3>
+        <div id="chartQtyTime" class="chartbox"></div>
+      </div>
+    </div>
+
     <div class="tablewrap" style="margin-top:14px">
       <table>
-        <thead><tr><th>Miejsce</th><th>Pracownik</th><th>Pełne sztuki</th><th>Średni czas</th><th>Wynik</th></tr></thead>
-        <tbody id="stCombined"></tbody>
+        <thead><tr><th>Miejsce</th><th>Pracownik</th><th>Pełne sztuki</th><th>Średni czas</th><th>Wszystkie prace</th></tr></thead>
+        <tbody id="stQtyTime"></tbody>
       </table>
     </div>
   </div>
@@ -2059,9 +2238,10 @@ function rankFullRows(rows){
 }
 
 
-var STATS_TAB='summary';
+
+var STATS_TAB='summary',QTY_TIME_SORT='qty';
 function showStatsTab(name,btn){
-  STATS_TAB=['summary','time','quantity','combined'].indexOf(name)>=0?name:'summary';
+  STATS_TAB=['summary','time','qtytime'].indexOf(name)>=0?name:'summary';
   document.querySelectorAll('#stats .statspanel').forEach(function(x){
     x.classList.toggle('active',x.id==='statsPanel'+STATS_TAB.charAt(0).toUpperCase()+STATS_TAB.slice(1))
   });
@@ -2073,18 +2253,6 @@ function showStatsTab(name,btn){
     if(panel&&panel.scrollIntoView)panel.scrollIntoView({behavior:'smooth',block:'start'})
   }
 }
-function renderCombinedChart(rows,type){
-  var el=$('chartCombined');if(!el)return;
-  if(!type){el.innerHTML='<div class="chartempty">Wybierz konkretny rodzaj centrali.</div>';return}
-  var a=combinedRows(rows);
-  if(!a.length){el.innerHTML='<div class="chartempty">Brak pełnych prac.</div>';return}
-  var max=Math.max.apply(null,a.map(function(x){return x.combinedScore||0}));
-  el.innerHTML=a.map(function(x){
-    var w=max?x.combinedScore/max*100:0;
-    return'<div class="chartrow"><div class="chartname" title="'+esc(x.name)+'">'+x.combinedPlace+'. '+esc(x.name)+'</div><div class="charttrack"><div class="barseg full" style="width:'+w.toFixed(2)+'%"></div></div><div class="chartvalue">'+x.combinedScore.toFixed(1)+' pkt</div></div>'
-  }).join('')
-}
-
 function rankQuantityRows(rows){
   var a=rows.filter(function(x){return x.full>0}).slice().sort(function(a,b){
     return b.full-a.full||a.avgFull-b.avgFull||a.name.localeCompare(b.name,'pl')
@@ -2096,46 +2264,44 @@ function rankQuantityRows(rows){
   });
   return a
 }
-function combinedRows(rows){
+function qtyTimeRows(rows){
   var a=rows.filter(function(x){return x.full>0}).slice();
-  if(!a.length)return[];
-  var fastest=Math.min.apply(null,a.map(function(x){return x.avgFull||Infinity}));
-  var maxQty=Math.max.apply(null,a.map(function(x){return x.full||0}));
-  a.forEach(function(x){
-    x.speedScore=(fastest>0&&x.avgFull>0)?fastest/x.avgFull*100:0;
-    x.qtyScore=maxQty?x.full/maxQty*100:0;
-    x.combinedScore=x.speedScore*.60+x.qtyScore*.40
-  });
-  a.sort(function(a,b){return b.combinedScore-a.combinedScore||b.full-a.full||a.avgFull-b.avgFull||a.name.localeCompare(b.name,'pl')});
+  if(QTY_TIME_SORT==='time'){
+    a.sort(function(a,b){return a.avgFull-b.avgFull||b.full-a.full||a.name.localeCompare(b.name,'pl')});
+  }else{
+    a.sort(function(a,b){return b.full-a.full||a.avgFull-b.avgFull||a.name.localeCompare(b.name,'pl')});
+  }
   var last=null,place=0;
   a.forEach(function(x){
-    var k=Math.round(x.combinedScore*100)/100;
-    if(last===null||k!==last){place++;last=k}
-    x.combinedPlace=place
+    var key=QTY_TIME_SORT==='time'?Math.round(x.avgFull):x.full;
+    if(last===null||key!==last){place++;last=key}
+    x.qtyTimePlace=place
   });
   return a
 }
-function renderQuantityAndCombined(d){
-  var qty=rankQuantityRows(d.rows),qtyTop=qty.filter(function(x){return x.qtyPlace<=3});
-  var selectedType=!!d.type;
-  $('rankQty').innerHTML=qtyTop.map(function(x){
-    return'<div class="statrankrow"><span class="statrankplace">'+x.qtyPlace+'</span><span class="statrankname">'+esc(x.name)+'<span class="statranksub">średnio '+fmt(x.avgFull)+' / pełna praca</span></span><span class="statrankvalue">'+x.full+' szt.</span></div>'
-  }).join('')||'<span class="muted">Brak pełnych prac.</span>';
-  $('rankQtyNote').innerHTML=selectedType
-    ?'Liczone są tylko <b>pełne prace</b> wybranego rodzaju centrali.'
-    :'To liczba pełnych prac ze wszystkich rodzajów. <b>Przy różnych typach central traktuj ten ranking orientacyjnie.</b>';
-
-  if(!selectedType){
-    $('rankCombined').innerHTML='<span class="muted">Wybierz konkretny rodzaj centrali powyżej.</span>';
-    $('rankCombinedNote').innerHTML='Wynik łączny pokazujemy tylko dla jednego rodzaju centrali, żeby porównywać podobne prace.';
-    return
+function setQtyTimeSort(mode){
+  QTY_TIME_SORT=mode==='time'?'time':'qty';
+  if($('qtySortBtn'))$('qtySortBtn').classList.toggle('active',QTY_TIME_SORT==='qty');
+  if($('timeSortBtn'))$('timeSortBtn').classList.toggle('active',QTY_TIME_SORT==='time');
+  renderStats()
+}
+function renderQtyTimeChart(rows){
+  var el=$('chartQtyTime');if(!el)return;
+  var a=qtyTimeRows(rows);
+  if(!a.length){el.innerHTML='<div class="chartempty">Brak pełnych prac.</div>';return}
+  if(QTY_TIME_SORT==='qty'){
+    var max=Math.max.apply(null,a.map(function(x){return x.full||0}));
+    el.innerHTML=a.map(function(x){
+      var w=max?x.full/max*100:0;
+      return'<div class="chartrow"><div class="chartname" title="'+esc(x.name)+'">'+x.qtyTimePlace+'. '+esc(x.name)+'</div><div class="charttrack"><div class="barseg full" style="width:'+w.toFixed(2)+'%"></div></div><div class="chartvalue">'+x.full+' szt.</div></div>'
+    }).join('')
+  }else{
+    var maxTime=Math.max.apply(null,a.map(function(x){return x.avgFull||0}));
+    el.innerHTML=a.map(function(x){
+      var w=maxTime?x.avgFull/maxTime*100:0;
+      return'<div class="chartrow"><div class="chartname" title="'+esc(x.name)+'">'+x.qtyTimePlace+'. '+esc(x.name)+'</div><div class="charttrack"><div class="barseg part" style="width:'+w.toFixed(2)+'%"></div></div><div class="chartvalue">'+fmt(x.avgFull)+'</div></div>'
+    }).join('')
   }
-
-  var comb=combinedRows(d.rows),combTop=comb.filter(function(x){return x.combinedPlace<=3});
-  $('rankCombined').innerHTML=combTop.map(function(x){
-    return'<div class="statrankrow"><span class="statrankplace">'+x.combinedPlace+'</span><span class="statrankname">'+esc(x.name)+'<span class="statranksub">'+x.full+' szt. · średnio '+fmt(x.avgFull)+'</span></span><span class="statrankvalue"><span class="combinedscore">'+x.combinedScore.toFixed(1)+' pkt</span></span></div>'
-  }).join('')||'<span class="muted">Brak pełnych prac.</span>';
-  $('rankCombinedNote').innerHTML='<b>Wersja testowa:</b> 60% wyniku daje średni czas, 40% liczba pełnych sztuk. Nie korzysta z norm.';
 }
 
 function statsData(){
@@ -2173,26 +2339,6 @@ function renderStats(){
     return'<div class="rank"><b>'+x.place+'. '+esc(x.name)+'</b> — średnio '+fmt(x.avgFull)+' ('+x.full+' pełn'+(x.full===1?'a praca':'e prace')+')</div>'
   }).join('')||'<span class="muted">Brak pełnych prac do rankingu.</span>';
 
-  var qty=rankQuantityRows(d.rows),qtyTop=qty.filter(function(x){return x.qtyPlace<=3});
-  $('rankQty').innerHTML=qtyTop.map(function(x){
-    return'<div class="statrankrow"><span class="statrankplace">'+x.qtyPlace+'</span><span class="statrankname">'+esc(x.name)+'<span class="statranksub">średnio '+fmt(x.avgFull)+' / pełna praca</span></span><span class="statrankvalue">'+x.full+' szt.</span></div>'
-  }).join('')||'<span class="muted">Brak pełnych prac.</span>';
-  $('rankQtyNote').innerHTML=d.type
-    ?'Liczone są tylko <b>pełne prace</b> wybranego rodzaju centrali.'
-    :'Przy „Wszystkie rodzaje” liczba sztuk jest informacją orientacyjną, bo centrale mogą mieć różny poziom trudności.';
-
-  var comb=d.type?combinedRows(d.rows):[];
-  var combTop=comb.filter(function(x){return x.combinedPlace<=3});
-  if(!d.type){
-    $('rankCombined').innerHTML='<span class="muted">Wybierz konkretny rodzaj centrali powyżej.</span>';
-    $('rankCombinedNote').innerHTML='Wynik łączny pokazujemy tylko dla jednego rodzaju centrali, żeby porównanie było uczciwsze.';
-  }else{
-    $('rankCombined').innerHTML=combTop.map(function(x){
-      return'<div class="statrankrow"><span class="statrankplace">'+x.combinedPlace+'</span><span class="statrankname">'+esc(x.name)+'<span class="statranksub">'+x.full+' szt. · średnio '+fmt(x.avgFull)+'</span></span><span class="statrankvalue"><span class="combinedscore">'+x.combinedScore.toFixed(1)+' pkt</span></span></div>'
-    }).join('')||'<span class="muted">Brak pełnych prac.</span>';
-    $('rankCombinedNote').innerHTML='<b>Wersja testowa:</b> 60% średni czas + 40% liczba pełnych sztuk. Bez norm.';
-  }
-
   $('stOverview').innerHTML=d.rows.map(function(x){
     return'<tr><td><b>'+esc(x.name)+'</b></td><td>'+x.count+'</td><td><b>'+x.full+'</b></td><td>'+x.partial+'</td><td>'+fmt(x.minutes)+'</td></tr>'
   }).join('')||'<tr><td colspan="5" class="muted">Brak danych.</td></tr>';
@@ -2201,20 +2347,34 @@ function renderStats(){
     return'<tr><td><b>'+(x.place||'—')+'</b></td><td><b>'+esc(x.name)+'</b></td><td>'+x.full+'</td><td>'+fmt(x.fullMinutes)+'</td><td><b>'+fmt(x.avgFull)+'</b></td></tr>'
   }).join('')||'<tr><td colspan="5" class="muted">Brak pełnych prac.</td></tr>';
 
-  $('stQty').innerHTML=qty.map(function(x){
-    return'<tr><td><b>'+(x.qtyPlace||'—')+'</b></td><td><b>'+esc(x.name)+'</b></td><td><b>'+x.full+'</b></td><td>'+x.partial+'</td><td>'+x.count+'</td></tr>'
+  var qt=qtyTimeRows(d.rows),topQt=qt.filter(function(x){return x.qtyTimePlace<=3});
+  $('qtyTimeRankTitle').textContent=QTY_TIME_SORT==='qty'?'Top 3 — najwięcej pełnych sztuk':'Top 3 — najlepszy średni czas';
+  $('qtyTimeChartTitle').textContent=QTY_TIME_SORT==='qty'?'Liczba pełnych sztuk':'Średni czas pełnej pracy';
+
+  $('rankQtyTime').innerHTML=topQt.map(function(x){
+    var main=QTY_TIME_SORT==='qty'?(x.full+' szt.') : fmt(x.avgFull);
+    var sub=QTY_TIME_SORT==='qty'?('średni czas '+fmt(x.avgFull)):(x.full+' pełnych szt.');
+    return'<div class="statrankrow"><span class="statrankplace">'+x.qtyTimePlace+'</span><span class="statrankname">'+esc(x.name)+'<span class="statranksub">'+sub+'</span></span><span class="statrankvalue">'+main+'</span></div>'
+  }).join('')||'<span class="muted">Brak pełnych prac.</span>';
+
+  $('rankQtyTimeNote').innerHTML=d.type
+    ?'Wybrany jest jeden rodzaj centrali, więc porównanie sztuk i czasu jest najbardziej miarodajne.'
+    :'Przy „Wszystkie rodzaje” liczba sztuk jest orientacyjna, bo różne centrale mogą mieć różny poziom trudności.';
+
+  var bestQty=qt.length?Math.max.apply(null,qt.map(function(x){return x.full})):0;
+  var bestTime=qt.length?Math.min.apply(null,qt.map(function(x){return x.avgFull})):0;
+  $('stQtyTime').innerHTML=qt.map(function(x){
+    var qtyBadge=x.full===bestQty?'<span class="qtytimebest">najwięcej</span>':'';
+    var timeBadge=x.avgFull===bestTime?'<span class="qtytimebest">najszybciej</span>':'';
+    return'<tr><td><b>'+x.qtyTimePlace+'</b></td><td><b>'+esc(x.name)+'</b></td><td><b>'+x.full+'</b>'+qtyBadge+'</td><td><b>'+fmt(x.avgFull)+'</b>'+timeBadge+'</td><td>'+x.count+'</td></tr>'
   }).join('')||'<tr><td colspan="5" class="muted">Brak pełnych prac.</td></tr>';
 
-  $('stCombined').innerHTML=d.type
-    ?(comb.map(function(x){
-      return'<tr><td><b>'+(x.combinedPlace||'—')+'</b></td><td><b>'+esc(x.name)+'</b></td><td>'+x.full+'</td><td>'+fmt(x.avgFull)+'</td><td><b>'+x.combinedScore.toFixed(1)+' pkt</b></td></tr>'
-    }).join('')||'<tr><td colspan="5" class="muted">Brak pełnych prac.</td></tr>')
-    :'<tr><td colspan="5" class="muted">Wybierz konkretny rodzaj centrali.</td></tr>';
+  if($('qtySortBtn'))$('qtySortBtn').classList.toggle('active',QTY_TIME_SORT==='qty');
+  if($('timeSortBtn'))$('timeSortBtn').classList.toggle('active',QTY_TIME_SORT==='time');
 
   renderStackChart('chartTimeMix',d.rows,'fullMinutes','partialMinutes',fmt);
   renderAvgFullChart(d.rows);
-  renderStackChart('chartWorkType',d.rows,'full','partial',function(v){return String(Math.round(v))});
-  renderCombinedChart(d.rows,d.type);
+  renderQtyTimeChart(d.rows);
   showStatsTab(STATS_TAB)
 }
 function csvCell(v){v=String(v==null?'':v);return/[;"\r\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v}
@@ -2227,10 +2387,10 @@ function exportFullStatsData(){
   var rows=names.map(function(n){var x=map[n]||{name:n,count:0,minutes:0,full:0,fullMinutes:0,rankMinutes:0,partial:0,partialMinutes:0,joined:0,left:0,byType:{}};x.avgFull=x.full?(x.rankMinutes||0)/x.full:0;return x});rows=rankFullRows(rows);return{month:m,type:t,entries:arr,types:types,rows:rows,details:details}
 }
 function exportStatsCSV(){
-  var d=exportFullStatsData(),qtyMap={},combMap={};rankQuantityRows(d.rows).forEach(function(x){qtyMap[x.name]=x.qtyPlace});if(d.type)combinedRows(d.rows).forEach(function(x){combMap[x.name]=x.combinedScore});var head=['Miejsce czasu','Miejsce ilości','Wynik ilość + czas','Pracownik','Wszystkie prace','Pełne prace','Udziały','Dołączył później','Zakończył wcześniej','Czas łącznie','Czas pełnych prac','Czas udziałów','Średnia pełnej pracy'];
+  var d=exportFullStatsData(),qtyMap={};rankQuantityRows(d.rows).forEach(function(x){qtyMap[x.name]=x.qtyPlace});var head=['Miejsce czasu','Miejsce ilości','Pracownik','Wszystkie prace','Pełne prace','Udziały','Dołączył później','Zakończył wcześniej','Czas łącznie','Czas pełnych prac','Czas udziałów','Średnia pełnej pracy'];
   d.types.forEach(function(t){head.push(t+' — wszystkie');head.push(t+' — pełne');head.push(t+' — udziały');head.push(t+' — czas łącznie');head.push(t+' — czas pełnych');head.push(t+' — średnia pełnej')});
   var rows=[['Hala',hallName()],['Miesiąc',d.month||'wszystkie'],['Typ centrali',d.type||'wszystkie'],['Pracownik',($('statEmployee')&&$('statEmployee').value)||'wszyscy'],[],head];
-  d.rows.forEach(function(x){var r=[x.place||'—',qtyMap[x.name]||'—',d.type&&combMap[x.name]!=null?combMap[x.name].toFixed(1):'—',x.name,x.count,x.full,x.partial,x.joined,x.left,fmt(x.minutes),fmt(x.fullMinutes),fmt(x.partialMinutes),x.full?fmt(x.avgFull):'—'];d.types.forEach(function(t){var y=x.byType[t]||{count:0,minutes:0,full:0,fullMinutes:0,partial:0};r.push(y.count);r.push(y.full);r.push(y.partial);r.push(fmt(y.minutes));r.push(fmt(y.fullMinutes));r.push(y.full?fmt((y.rankMinutes||0)/y.full):'—')});rows.push(r)});
+  d.rows.forEach(function(x){var r=[x.place||'—',qtyMap[x.name]||'—',x.name,x.count,x.full,x.partial,x.joined,x.left,fmt(x.minutes),fmt(x.fullMinutes),fmt(x.partialMinutes),x.full?fmt(x.avgFull):'—'];d.types.forEach(function(t){var y=x.byType[t]||{count:0,minutes:0,full:0,fullMinutes:0,partial:0};r.push(y.count);r.push(y.full);r.push(y.partial);r.push(fmt(y.minutes));r.push(fmt(y.fullMinutes));r.push(y.full?fmt((y.rankMinutes||0)/y.full):'—')});rows.push(r)});
   rows.push([]);rows.push(['SZCZEGÓŁY WPISÓW']);rows.push(['Data rozpoczęcia','Data zakończenia','Nr / oznaczenie','Typ urządzenia','Sekcja','Pracownik','System pracy','Udział od','Udział do','Status udziału','Klasyfikacja','Czas przy pracy','Korekta historyczna (h)','Uwagi']);d.details.forEach(function(x){rows.push([x.start,x.end,x.number,x.type,x.section||'—',x.employee,x.system,x.from,x.to,x.status,x.classification,fmt(x.minutes),x.correction,x.notes])});
   var csv='\ufeff'+rows.map(function(r){return r.map(csvCell).join(';')}).join('\r\n');downloadBlob(new Blob([csv],{type:'text/csv;charset=utf-8'}),'ClimaGold_'+HALL+'_statystyki_PELNE_UDZIALY_'+(d.month||'wszystkie')+'.csv')
 }
@@ -2238,10 +2398,10 @@ function xmlEsc(v){return String(v==null?'':v).replace(/&/g,'&amp;').replace(/</
 function exportStatsXLS(){
   var d=exportFullStatsData(),r='<?xml version="1.0"?><Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">';
   function sheet(name,rows,widths){r+='<Worksheet ss:Name="'+xmlEsc(name)+'"><Table>';(widths||[]).forEach(function(w){r+='<Column ss:AutoFitWidth="1" ss:Width="'+w+'"/>'});rows.forEach(function(a){r+='<Row>'+a.map(function(v){return'<Cell><Data ss:Type="String">'+xmlEsc(v)+'</Data></Cell>'}).join('')+'</Row>'});r+='</Table></Worksheet>'}
-  var qtyMap={},combMap={};rankQuantityRows(d.rows).forEach(function(x){qtyMap[x.name]=x.qtyPlace});if(d.type)combinedRows(d.rows).forEach(function(x){combMap[x.name]=x.combinedScore});var sum=[['Hala',hallName()],['Miesiąc',d.month||'wszystkie'],['Typ centrali',d.type||'wszystkie'],['Pracownik',($('statEmployee')&&$('statEmployee').value)||'wszyscy'],[],['Miejsce czasu','Miejsce ilości','Wynik ilość + czas','Pracownik','Wszystkie prace','Pełne prace','Udziały','Dołączył później','Zakończył wcześniej','Czas łącznie','Czas pełnych','Czas udziałów','Średnia pełnej pracy']];d.rows.forEach(function(x){sum.push([x.place||'—',qtyMap[x.name]||'—',d.type&&combMap[x.name]!=null?combMap[x.name].toFixed(1):'—',x.name,x.count,x.full,x.partial,x.joined,x.left,fmt(x.minutes),fmt(x.fullMinutes),fmt(x.partialMinutes),x.full?fmt(x.avgFull):'—'])});
+  var qtyMap={};rankQuantityRows(d.rows).forEach(function(x){qtyMap[x.name]=x.qtyPlace});var sum=[['Hala',hallName()],['Miesiąc',d.month||'wszystkie'],['Typ centrali',d.type||'wszystkie'],['Pracownik',($('statEmployee')&&$('statEmployee').value)||'wszyscy'],[],['Miejsce czasu','Miejsce ilości','Pracownik','Wszystkie prace','Pełne prace','Udziały','Dołączył później','Zakończył wcześniej','Czas łącznie','Czas pełnych','Czas udziałów','Średnia pełnej pracy']];d.rows.forEach(function(x){sum.push([x.place||'—',qtyMap[x.name]||'—',x.name,x.count,x.full,x.partial,x.joined,x.left,fmt(x.minutes),fmt(x.fullMinutes),fmt(x.partialMinutes),x.full?fmt(x.avgFull):'—'])});
   var typ=[['Pracownik']];d.types.forEach(function(t){typ[0].push(t+' — wszystkie');typ[0].push(t+' — pełne');typ[0].push(t+' — udziały');typ[0].push(t+' — czas łącznie');typ[0].push(t+' — czas pełnych');typ[0].push(t+' — średnia pełnej')});d.rows.forEach(function(x){var a=[x.name];d.types.forEach(function(t){var y=x.byType[t]||{count:0,minutes:0,full:0,fullMinutes:0,partial:0};a.push(y.count);a.push(y.full);a.push(y.partial);a.push(fmt(y.minutes));a.push(fmt(y.fullMinutes));a.push(y.full?fmt((y.rankMinutes||0)/y.full):'—')});typ.push(a)});
   var det=[['Data rozpoczęcia','Data zakończenia','Nr / oznaczenie','Typ urządzenia','Sekcja','Pracownik','System pracy','Udział od','Udział do','Status udziału','Klasyfikacja','Czas przy pracy','Korekta historyczna (h)','Uwagi']];d.details.forEach(function(x){det.push([x.start,x.end,x.number,x.type,x.section||'—',x.employee,x.system,x.from,x.to,x.status,x.classification,fmt(x.minutes),x.correction,x.notes])});
-  var tw=[180];d.types.forEach(function(){tw.push(80);tw.push(80);tw.push(80);tw.push(100);tw.push(100);tw.push(105)});sheet('Podsumowanie',sum,[80,80,95,180,90,85,80,105,115,105,105,105,120]);sheet('Typy central',typ,tw);sheet('Szczegóły',det,[105,105,115,130,185,165,135,135,230,100,110,95,300]);r+='</Workbook>';downloadBlob(new Blob([r],{type:'application/vnd.ms-excel;charset=utf-8'}),'ClimaGold_'+HALL+'_statystyki_PELNE_UDZIALY_'+(d.month||'wszystkie')+'.xls')
+  var tw=[180];d.types.forEach(function(){tw.push(80);tw.push(80);tw.push(80);tw.push(100);tw.push(100);tw.push(105)});sheet('Podsumowanie',sum,[80,80,180,90,85,80,105,115,105,105,105,120]);sheet('Typy central',typ,tw);sheet('Szczegóły',det,[105,105,115,130,185,165,135,135,230,100,110,95,300]);r+='</Workbook>';downloadBlob(new Blob([r],{type:'application/vnd.ms-excel;charset=utf-8'}),'ClimaGold_'+HALL+'_statystyki_PELNE_UDZIALY_'+(d.month||'wszystkie')+'.xls')
 }
 function scoreRating(r){var a=[r.knowledge,r.efficiency,r.accuracy,r.quality];if(a.some(function(v){return!v||v==='-'}))return null;return a.reduce(function(s,v){return s+(parseInt(v)||0)},0)}
 function ratingOpts(v){return['-','1/5','2/5','3/5','4/5','5/5'].map(function(x){return'<option'+(x===v?' selected':'')+'>'+x+'</option>'}).join('')}
