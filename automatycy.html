@@ -600,6 +600,7 @@ th{background:#f6f8f9}
 /* FINAL v52: Podsumowanie / Czas / Ilość i czas — bez punktów, z ikonami i ilustracjami */
 /* FINAL v53: prostszy opis Ilość i czas + zawsze widoczny Zapisz na telefonie */
 /* FINAL v54: tylko aktywny przycisk Ilość/Czas jest pomarańczowy */
+/* FINAL v55: statystyki Podsumowanie / Wydajność / Udziały */
 .groupbadge{display:flex;align-items:center;min-height:39px;padding:9px 11px;border:1px solid #e6c66f;border-radius:9px;background:#fff7d8;color:#60470d;font-weight:800}
 .groupassign{display:grid;grid-template-columns:minmax(180px,1fr) 130px;gap:10px;align-items:center;padding:7px 0;border-bottom:1px solid var(--line)}
 .groupassign:last-child{border-bottom:0}
@@ -1163,6 +1164,15 @@ th{background:#f6f8f9}
   box-shadow:0 0 0 2px rgba(229,138,31,.12) !important;
 }
 
+
+/* FINAL v55: Podsumowanie / Wydajność / Udziały */
+.statillustration.participation circle{
+  fill:#fff0d8;
+  stroke:#d77d18;
+  stroke-width:3;
+}
+.statillustration.participation path{stroke:#d77d18}
+
 </style></head><body>
 <div id="login" class="login"><div class="box"><button type="button" class="btn secondary" onclick="location.href='./index.html'" style="width:100%;margin:0 0 14px">← Wróć do wyboru działu</button><div class="brand"><span class="brandmark" aria-hidden="true"><i></i><i></i><i></i></span><span class="brandtext"><span class="clima">Clima</span><span class="gold">Gold</span></span></div><h2>Automatycy</h2><div class="hint">Wspólna baza online</div><div class="field"><label>Login</label><input id="lu" value="brygadzista" autocomplete="username"></div><div class="field"><label>Hasło</label><input id="lp" type="password" autocomplete="current-password"></div><button class="btn" onclick="doLogin()">Zaloguj</button><div id="le" class="error"></div></div></div>
 <div id="app" class="app"><aside class="side"><div class="brand"><span class="brandmark" aria-hidden="true"><i></i><i></i><i></i></span><span class="brandtext"><span class="clima">Clima</span><span class="gold">Gold</span></span></div><span class="hall">AUTOMATYCY</span><div class="nav">
@@ -1262,17 +1272,19 @@ th{background:#f6f8f9}
       </span>
       <span><b>Podsumowanie</b><small>Ogólny obraz pracy</small></span>
     </button>
-    <button class="statstab" data-stat-tab="time" onclick="showStatsTab('time',this)">
+
+    <button class="statstab" data-stat-tab="performance" onclick="showStatsTab('performance',this)">
       <span class="statstabicon">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9 9.01 9.01 0 0 0-9-9Zm1 10h-5v-2h3V6h2Z"/></svg>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 18h4v-7H3v7Zm7 0h4V6h-4v12Zm7 0h4V3h-4v15ZM4 4l4 3 5-4 7 4v3l-7-4-5 4-4-3V4Z"/></svg>
       </span>
-      <span><b>Czas</b><small>Kto robi najszybciej</small></span>
+      <span><b>Wydajność</b><small>Ilość + średni czas</small></span>
     </button>
-    <button class="statstab" data-stat-tab="qtytime" onclick="showStatsTab('qtytime',this)">
+
+    <button class="statstab" data-stat-tab="participation" onclick="showStatsTab('participation',this)">
       <span class="statstabicon">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h8v6H3V5Zm10 0h8v6h-8V5ZM3 13h8v6H3v-6Zm13 0a5 5 0 1 1-5 5 5.006 5.006 0 0 1 5-5Zm.8 2.2h-1.6V18l2.2 1.3.8-1.4-1.4-.8Z"/></svg>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 11a4 4 0 1 0-4-4 4 4 0 0 0 4 4Zm8-2a3 3 0 1 0-3-3 3 3 0 0 0 3 3ZM2 20v-2c0-3 2.7-5 6-5s6 2 6 5v2H2Zm13 0v-2a6.6 6.6 0 0 0-1.1-3.6A6.6 6.6 0 0 1 16 14c3 0 6 1.8 6 4v2h-7Z"/></svg>
       </span>
-      <span><b>Ilość i czas</b><small>Sztuki + średni czas</small></span>
+      <span><b>Udziały</b><small>Dołączenia i wcześniejsze wyjścia</small></span>
     </button>
   </div>
 
@@ -1281,7 +1293,7 @@ th{background:#f6f8f9}
       <div>
         <div class="statcategoryeyebrow">PODSUMOWANIE</div>
         <h3>Najważniejsze dane w jednym miejscu</h3>
-        <p>Szybki podgląd liczby zakończonych central, roboczogodzin i udziału pracowników.</p>
+        <p>Szybki podgląd zakończonych central, roboczogodzin i pracy całego zespołu.</p>
       </div>
       <div class="statillustration" aria-hidden="true">
         <svg viewBox="0 0 180 110">
@@ -1315,49 +1327,12 @@ th{background:#f6f8f9}
     </div>
   </div>
 
-  <div class="statspanel" id="statsPanelTime">
+  <div class="statspanel" id="statsPanelPerformance">
     <div class="statcategoryhero">
       <div>
-        <div class="statcategoryeyebrow">CZAS</div>
-        <h3>Kto ma najlepszy średni czas</h3>
-        <p>Ranking uwzględnia tylko pełne prace. Dołączenie później albo wcześniejsze zakończenie nie wpływa na miejsce.</p>
-      </div>
-      <div class="statillustration time" aria-hidden="true">
-        <svg viewBox="0 0 180 110">
-          <circle cx="90" cy="55" r="39"/>
-          <path d="M90 31v27l18 11" fill="none" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M63 18h54" fill="none" stroke-width="7" stroke-linecap="round"/>
-        </svg>
-      </div>
-    </div>
-
-    <div class="card statsnote">
-      <h3>Top 3 — najkrótszy średni czas pełnej pracy</h3>
-      <div id="rank"></div>
-    </div>
-
-    <div class="statscharts onecol">
-      <div class="card">
-        <h3>Średni czas pełnej pracy</h3>
-        <div class="muted" style="margin-bottom:10px">Krótszy czas = lepszy wynik.</div>
-        <div id="chartAvgFull" class="chartbox"></div>
-      </div>
-    </div>
-
-    <div class="tablewrap" style="margin-top:14px">
-      <table>
-        <thead><tr><th>Miejsce</th><th>Pracownik</th><th>Pełne prace</th><th>Czas pełnych</th><th>Średni czas</th></tr></thead>
-        <tbody id="stTime"></tbody>
-      </table>
-    </div>
-  </div>
-
-  <div class="statspanel" id="statsPanelQtytime">
-    <div class="statcategoryhero">
-      <div>
-        <div class="statcategoryeyebrow">ILOŚĆ I CZAS</div>
-        <h3>Porównaj ile ktoś zrobił i w jakim czasie</h3>
-        <p>Porównaj liczbę pełnych sztuk ze średnim czasem wykonania.</p>
+        <div class="statcategoryeyebrow">WYDAJNOŚĆ</div>
+        <h3>Ile zrobił i jaki miał średni czas</h3>
+        <p>Jedna tabela pokazuje liczbę pełnych sztuk oraz średni czas wykonania. Bez punktów i sztucznych przeliczników.</p>
       </div>
       <div class="statillustration qty" aria-hidden="true">
         <svg viewBox="0 0 180 110">
@@ -1372,8 +1347,8 @@ th{background:#f6f8f9}
 
     <div class="card qtytimecontrols">
       <div>
-        <h3>Jak chcesz ustawić kolejność?</h3>
-        <div class="muted">Tabela zawsze pokazuje jednocześnie sztuki i średni czas.</div>
+        <h3>Ustaw kolejność</h3>
+        <div class="muted">Wybierz tylko, po czym tabela ma być posortowana.</div>
       </div>
       <div class="qtytimebuttons">
         <button id="qtySortBtn" class="btn secondary qtysort active" onclick="setQtyTimeSort('qty')">Najwięcej sztuk</button>
@@ -1398,6 +1373,44 @@ th{background:#f6f8f9}
       <table>
         <thead><tr><th>Miejsce</th><th>Pracownik</th><th>Pełne sztuki</th><th>Średni czas</th><th>Wszystkie prace</th></tr></thead>
         <tbody id="stQtyTime"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="statspanel" id="statsPanelParticipation">
+    <div class="statcategoryhero">
+      <div>
+        <div class="statcategoryeyebrow">UDZIAŁY</div>
+        <h3>Prace częściowe i zmiany w zespole</h3>
+        <p>Tu widać, kto dołączał później, kończył wcześniej i ile czasu przepracował jako udział w centrali.</p>
+      </div>
+      <div class="statillustration participation" aria-hidden="true">
+        <svg viewBox="0 0 180 110">
+          <circle cx="55" cy="38" r="16"/>
+          <circle cx="118" cy="35" r="13"/>
+          <path d="M25 91c0-23 14-37 30-37s30 14 30 37" fill="none" stroke-width="7" stroke-linecap="round"/>
+          <path d="M95 88c0-18 10-29 23-29s25 11 25 29" fill="none" stroke-width="7" stroke-linecap="round"/>
+          <path d="M77 50h25" fill="none" stroke-width="6" stroke-linecap="round"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="cards">
+      <div class="card statkpicard"><div class="statkpiicon">↳</div><div><div class="muted">Łączna liczba udziałów</div><div id="sp1" class="kpi">0</div></div></div>
+      <div class="card statkpicard"><div class="statkpiicon">◷</div><div><div class="muted">Czas udziałów</div><div id="sp2" class="kpi">0:00</div></div></div>
+    </div>
+
+    <div class="statscharts onecol">
+      <div class="card">
+        <h3>Udziały według pracownika</h3>
+        <div id="chartParticipation" class="chartbox"></div>
+      </div>
+    </div>
+
+    <div class="tablewrap" style="margin-top:14px">
+      <table>
+        <thead><tr><th>Pracownik</th><th>Udziały</th><th>Dołączył później</th><th>Zakończył wcześniej</th><th>Czas udziałów</th></tr></thead>
+        <tbody id="stParticipation"></tbody>
       </table>
     </div>
   </div>
@@ -2297,9 +2310,10 @@ function rankFullRows(rows){
 
 
 
+
 var STATS_TAB='summary',QTY_TIME_SORT='qty';
 function showStatsTab(name,btn){
-  STATS_TAB=['summary','time','qtytime'].indexOf(name)>=0?name:'summary';
+  STATS_TAB=['summary','performance','participation'].indexOf(name)>=0?name:'summary';
   document.querySelectorAll('#stats .statspanel').forEach(function(x){
     x.classList.toggle('active',x.id==='statsPanel'+STATS_TAB.charAt(0).toUpperCase()+STATS_TAB.slice(1))
   });
@@ -2361,6 +2375,18 @@ function renderQtyTimeChart(rows){
     }).join('')
   }
 }
+function renderParticipationChart(rows){
+  var el=$('chartParticipation');if(!el)return;
+  var a=rows.filter(function(x){return x.partial>0}).slice().sort(function(a,b){
+    return b.partial-a.partial||b.partialMinutes-a.partialMinutes||a.name.localeCompare(b.name,'pl')
+  });
+  if(!a.length){el.innerHTML='<div class="chartempty">Brak udziałów w wybranym okresie.</div>';return}
+  var max=Math.max.apply(null,a.map(function(x){return x.partial||0}));
+  el.innerHTML=a.map(function(x){
+    var w=max?x.partial/max*100:0;
+    return'<div class="chartrow"><div class="chartname" title="'+esc(x.name)+'">'+esc(x.name)+'</div><div class="charttrack"><div class="barseg part" style="width:'+w.toFixed(2)+'%"></div></div><div class="chartvalue">'+x.partial+'</div></div>'
+  }).join('')
+}
 
 function statsData(){
   var m=$('month').value,t=$('statType').value,emp=$('statEmployee')?$('statEmployee').value:'',arr=D.entries.filter(function(e){return e.end_date&&(!m||(e.start_date<=m+'-31'&&e.end_date>=m+'-01'))&&(!t||e.device_type===t)&&(!emp||(e.employees||[]).indexOf(emp)>=0)}),map={},total=0;
@@ -2390,20 +2416,13 @@ function renderAvgFullChart(rows){
   el.innerHTML=a.map(function(x){var w=max?x.avgFull/max*100:0;return'<div class="chartrow"><div class="chartname" title="'+esc(x.name)+'">'+x.place+'. '+esc(x.name)+'</div><div class="charttrack"><div class="barseg full" style="width:'+w.toFixed(2)+'%"></div></div><div class="chartvalue">'+fmt(x.avgFull)+' · '+x.full+' pełn'+(x.full===1?'a':'e')+'</div></div>'}).join('')
 }
 function renderStats(){
-  var d=statsData();$('sk1').textContent=d.entries.length;$('sk2').textContent=fmt(d.total);
-
-  var top=d.rows.filter(function(x){return x.place&&x.place<=3});
-  $('rank').innerHTML=top.map(function(x){
-    return'<div class="rank"><b>'+x.place+'. '+esc(x.name)+'</b> — średnio '+fmt(x.avgFull)+' ('+x.full+' pełn'+(x.full===1?'a praca':'e prace')+')</div>'
-  }).join('')||'<span class="muted">Brak pełnych prac do rankingu.</span>';
+  var d=statsData();
+  $('sk1').textContent=d.entries.length;
+  $('sk2').textContent=fmt(d.total);
 
   $('stOverview').innerHTML=d.rows.map(function(x){
     return'<tr><td><b>'+esc(x.name)+'</b></td><td>'+x.count+'</td><td><b>'+x.full+'</b></td><td>'+x.partial+'</td><td>'+fmt(x.minutes)+'</td></tr>'
   }).join('')||'<tr><td colspan="5" class="muted">Brak danych.</td></tr>';
-
-  $('stTime').innerHTML=d.rows.filter(function(x){return x.full>0}).map(function(x){
-    return'<tr><td><b>'+(x.place||'—')+'</b></td><td><b>'+esc(x.name)+'</b></td><td>'+x.full+'</td><td>'+fmt(x.fullMinutes)+'</td><td><b>'+fmt(x.avgFull)+'</b></td></tr>'
-  }).join('')||'<tr><td colspan="5" class="muted">Brak pełnych prac.</td></tr>';
 
   var qt=qtyTimeRows(d.rows),topQt=qt.filter(function(x){return x.qtyTimePlace<=3});
   $('qtyTimeRankTitle').textContent=QTY_TIME_SORT==='qty'?'Top 3 — najwięcej pełnych sztuk':'Top 3 — najlepszy średni czas';
@@ -2416,8 +2435,8 @@ function renderStats(){
   }).join('')||'<span class="muted">Brak pełnych prac.</span>';
 
   $('rankQtyTimeNote').innerHTML=d.type
-    ?'Wybrany jest jeden rodzaj centrali, więc porównanie sztuk i czasu jest najbardziej miarodajne.'
-    :'Przy „Wszystkie rodzaje” liczba sztuk jest orientacyjna, bo różne centrale mogą mieć różny poziom trudności.';
+    ?'Wybrany jest jeden rodzaj centrali — porównujesz tych samych rodzajów pracy.'
+    :'Przy „Wszystkie rodzaje” liczba sztuk jest orientacyjna, bo centrale mogą różnić się pracochłonnością.';
 
   var bestQty=qt.length?Math.max.apply(null,qt.map(function(x){return x.full})):0;
   var bestTime=qt.length?Math.min.apply(null,qt.map(function(x){return x.avgFull})):0;
@@ -2427,12 +2446,24 @@ function renderStats(){
     return'<tr><td><b>'+x.qtyTimePlace+'</b></td><td><b>'+esc(x.name)+'</b></td><td><b>'+x.full+'</b>'+qtyBadge+'</td><td><b>'+fmt(x.avgFull)+'</b>'+timeBadge+'</td><td>'+x.count+'</td></tr>'
   }).join('')||'<tr><td colspan="5" class="muted">Brak pełnych prac.</td></tr>';
 
+  var partCount=d.rows.reduce(function(s,x){return s+x.partial},0);
+  var partMins=d.rows.reduce(function(s,x){return s+x.partialMinutes},0);
+  $('sp1').textContent=partCount;
+  $('sp2').textContent=fmt(partMins);
+
+  var pr=d.rows.filter(function(x){return x.partial>0||x.joined>0||x.left>0}).slice().sort(function(a,b){
+    return b.partial-a.partial||b.partialMinutes-a.partialMinutes||a.name.localeCompare(b.name,'pl')
+  });
+  $('stParticipation').innerHTML=pr.map(function(x){
+    return'<tr><td><b>'+esc(x.name)+'</b></td><td><b>'+x.partial+'</b></td><td>'+x.joined+'</td><td>'+x.left+'</td><td>'+fmt(x.partialMinutes)+'</td></tr>'
+  }).join('')||'<tr><td colspan="5" class="muted">Brak udziałów w wybranym okresie.</td></tr>';
+
   if($('qtySortBtn'))$('qtySortBtn').classList.toggle('active',QTY_TIME_SORT==='qty');
   if($('timeSortBtn'))$('timeSortBtn').classList.toggle('active',QTY_TIME_SORT==='time');
 
   renderStackChart('chartTimeMix',d.rows,'fullMinutes','partialMinutes',fmt);
-  renderAvgFullChart(d.rows);
   renderQtyTimeChart(d.rows);
+  renderParticipationChart(d.rows);
   showStatsTab(STATS_TAB)
 }
 function csvCell(v){v=String(v==null?'':v);return/[;"\r\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v}
