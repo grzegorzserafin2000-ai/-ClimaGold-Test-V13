@@ -598,6 +598,8 @@ th{background:#f6f8f9}
 /* FINAL v50: Statystyki — ranking ilości i testowy wynik ilość + czas bez norm */
 /* FINAL v51: Statystyki podzielone na kategorie z osobnymi tabelami i wykresami */
 /* FINAL v52: Podsumowanie / Czas / Ilość i czas — bez punktów, z ikonami i ilustracjami */
+/* FINAL v53: prostszy opis Ilość i czas + zawsze widoczny Zapisz na telefonie */
+/* FINAL v54: tylko aktywny przycisk Ilość/Czas jest pomarańczowy */
 .groupbadge{display:flex;align-items:center;min-height:39px;padding:9px 11px;border:1px solid #e6c66f;border-radius:9px;background:#fff7d8;color:#60470d;font-weight:800}
 .groupassign{display:grid;grid-template-columns:minmax(180px,1fr) 130px;gap:10px;align-items:center;padding:7px 0;border-bottom:1px solid var(--line)}
 .groupassign:last-child{border-bottom:0}
@@ -1105,6 +1107,62 @@ th{background:#f6f8f9}
   .qtytimebuttons .btn{width:100%}
 }
 
+
+/* FINAL v53: stały i czytelny zapis wpisu na telefonie */
+.entryactions{
+  display:flex;
+  gap:8px;
+  margin-top:14px;
+}
+.entryactions .btn{
+  min-height:44px;
+}
+@media(max-width:760px){
+  .dialog{
+    width:min(100%,850px);
+    max-height:calc(100dvh - 12px);
+    padding:16px 16px 0;
+    border-radius:14px;
+  }
+  .entryactions{
+    position:sticky;
+    z-index:30;
+    bottom:0;
+    margin:16px -16px 0;
+    padding:10px 16px calc(10px + env(safe-area-inset-bottom));
+    background:rgba(255,255,255,.98);
+    border-top:1px solid var(--line);
+    box-shadow:0 -8px 20px rgba(15,23,42,.08);
+  }
+  .entryactions .btn{
+    flex:1 1 0;
+    min-width:0;
+    min-height:50px;
+    font-size:16px;
+    font-weight:900;
+  }
+  .entrysavebtn{
+    background:#e58a1f !important;
+    color:#fff !important;
+    border-color:#e58a1f !important;
+  }
+}
+
+
+/* FINAL v54: jednoznaczny stan przycisków Ilość i czas */
+.qtysort{
+  background:#fff !important;
+  color:var(--ink) !important;
+  border:1px solid var(--line) !important;
+  box-shadow:none !important;
+}
+.qtysort.active{
+  background:#e58a1f !important;
+  color:#fff !important;
+  border-color:#e58a1f !important;
+  box-shadow:0 0 0 2px rgba(229,138,31,.12) !important;
+}
+
 </style></head><body>
 <div id="login" class="login"><div class="box"><button type="button" class="btn secondary" onclick="location.href='./index.html'" style="width:100%;margin:0 0 14px">← Wróć do wyboru działu</button><div class="brand"><span class="brandmark" aria-hidden="true"><i></i><i></i><i></i></span><span class="brandtext"><span class="clima">Clima</span><span class="gold">Gold</span></span></div><h2>Elektrycy H2</h2><div class="hint">Wspólna baza online</div><div class="field"><label>Login</label><input id="lu" value="brygadzista" autocomplete="username"></div><div class="field"><label>Hasło</label><input id="lp" type="password" autocomplete="current-password"></div><button class="btn" onclick="doLogin()">Zaloguj</button><div id="le" class="error"></div></div></div>
 <div id="app" class="app"><aside class="side"><div class="brand"><span class="brandmark" aria-hidden="true"><i></i><i></i><i></i></span><span class="brandtext"><span class="clima">Clima</span><span class="gold">Gold</span></span></div><span class="hall">ELEKTRYCY H2</span><div class="nav">
@@ -1299,7 +1357,7 @@ th{background:#f6f8f9}
       <div>
         <div class="statcategoryeyebrow">ILOŚĆ I CZAS</div>
         <h3>Porównaj ile ktoś zrobił i w jakim czasie</h3>
-        <p>Bez punktów i bez wzoru 60/40. Widzisz prawdziwą liczbę pełnych sztuk i prawdziwy średni czas.</p>
+        <p>Porównaj liczbę pełnych sztuk ze średnim czasem wykonania.</p>
       </div>
       <div class="statillustration qty" aria-hidden="true">
         <svg viewBox="0 0 180 110">
@@ -1318,7 +1376,7 @@ th{background:#f6f8f9}
         <div class="muted">Tabela zawsze pokazuje jednocześnie sztuki i średni czas.</div>
       </div>
       <div class="qtytimebuttons">
-        <button id="qtySortBtn" class="btn qtysort active" onclick="setQtyTimeSort('qty')">Najwięcej sztuk</button>
+        <button id="qtySortBtn" class="btn secondary qtysort active" onclick="setQtyTimeSort('qty')">Najwięcej sztuk</button>
         <button id="timeSortBtn" class="btn secondary qtysort" onclick="setQtyTimeSort('time')">Najlepszy czas</button>
       </div>
     </div>
@@ -1392,7 +1450,7 @@ th{background:#f6f8f9}
 </section>
 <section id="users" class="view"><div class="card"><h3>Nowe konto</h3><div class="grid"><div class="field"><label>Login</label><input id="nu"></div><div class="field"><label>Hasło</label><input id="np" type="password"></div><div class="field"><label>Rola</label><select id="nr"><option value="supervisor">Przełożony</option><option value="viewer">Tylko podgląd</option><option value="admin">Administrator</option></select></div></div><button class="btn" onclick="addUser()">Dodaj konto</button></div><div class="card" style="margin-top:14px"><div id="ul"></div></div></section>
 </main></div>
-<div id="modal" class="modal"><div class="dialog"><h2>Wpis ewidencji</h2><input id="eid" type="hidden"><div class="quickwork"><button type="button" class="btn" onclick="quickStartWork()"><span class="qicon play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5.2v13.6c0 .9 1 1.4 1.7.9l9.6-6.8c.7-.5.7-1.5 0-2L9.7 4.1C9 3.6 8 4.1 8 5.2Z"/></svg></span><span>START PRACY</span></button><button type="button" class="btn secondary" onclick="quickEndWork()"><span class="qicon stop" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="1.8"/></svg></span><span>KONIEC PRACY</span></button></div><div class="grid"><div class="field"><label>Nr / oznaczenie</label><input id="no"></div><div class="field"><label>Data rozpoczęcia</label><input id="sd" type="date"></div><div class="field"><label>Data zakończenia</label><input id="ed" type="date"></div><div class="field"><label>Typ urządzenia</label><select id="dt" onchange="updateSectionVisibility()"></select></div><div class="field"><label>Godzina rozpoczęcia</label><input id="stt" type="time"></div><div class="field"><label>Godzina zakończenia</label><input id="ett" type="time"></div></div><div class="field" id="sectionField" style="display:none"><label>Sekcja centrali dzielonej</label><select id="section"></select></div><h3>Pracownicy, system pracy i korekty czasu</h3><div class="muted">Każdy pracownik ma własny system pracy na każdy dzień wpisu.</div><div id="empsel"></div><div class="toolbar empaddbar"><button id="addEmpBtn" type="button" class="btn" onclick="addEmployeeBlock()">+ Dodaj pracownika</button></div><div class="grid"><div class="field"><label>Kolor</label><select id="markcolor"><option value="">Bez koloru</option><option value="yellow">Żółty</option><option value="green">Zielony</option><option value="blue">Niebieski</option><option value="red">Czerwony</option><option value="orange">Pomarańczowy</option><option value="purple">Fioletowy</option></select></div><div class="field" style="grid-column:span 2"><label>Uwagi</label><textarea id="notes"></textarea></div></div><div class="toolbar"><button class="btn" onclick="saveEntry()">Zapisz</button><button class="btn secondary" onclick="closeEntry()">Anuluj</button></div></div></div>
+<div id="modal" class="modal"><div class="dialog"><h2>Wpis ewidencji</h2><input id="eid" type="hidden"><div class="quickwork"><button type="button" class="btn" onclick="quickStartWork()"><span class="qicon play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5.2v13.6c0 .9 1 1.4 1.7.9l9.6-6.8c.7-.5.7-1.5 0-2L9.7 4.1C9 3.6 8 4.1 8 5.2Z"/></svg></span><span>START PRACY</span></button><button type="button" class="btn secondary" onclick="quickEndWork()"><span class="qicon stop" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="1.8"/></svg></span><span>KONIEC PRACY</span></button></div><div class="grid"><div class="field"><label>Nr / oznaczenie</label><input id="no"></div><div class="field"><label>Data rozpoczęcia</label><input id="sd" type="date"></div><div class="field"><label>Data zakończenia</label><input id="ed" type="date"></div><div class="field"><label>Typ urządzenia</label><select id="dt" onchange="updateSectionVisibility()"></select></div><div class="field"><label>Godzina rozpoczęcia</label><input id="stt" type="time"></div><div class="field"><label>Godzina zakończenia</label><input id="ett" type="time"></div></div><div class="field" id="sectionField" style="display:none"><label>Sekcja centrali dzielonej</label><select id="section"></select></div><h3>Pracownicy, system pracy i korekty czasu</h3><div class="muted">Każdy pracownik ma własny system pracy na każdy dzień wpisu.</div><div id="empsel"></div><div class="toolbar empaddbar"><button id="addEmpBtn" type="button" class="btn" onclick="addEmployeeBlock()">+ Dodaj pracownika</button></div><div class="grid"><div class="field"><label>Kolor</label><select id="markcolor"><option value="">Bez koloru</option><option value="yellow">Żółty</option><option value="green">Zielony</option><option value="blue">Niebieski</option><option value="red">Czerwony</option><option value="orange">Pomarańczowy</option><option value="purple">Fioletowy</option></select></div><div class="field" style="grid-column:span 2"><label>Uwagi</label><textarea id="notes"></textarea></div></div><div class="entryactions"><button class="btn entrysavebtn" onclick="saveEntry()">Zapisz</button><button class="btn secondary entrycancelbtn" onclick="closeEntry()">Anuluj</button></div></div></div>
 <script>
 
 var HALL='H2',D=null,ME=null,TOKEN_KEY='cg_'+HALL+'_token',DEFAULT_EMP=HALL==='AUTO'?1:2,MAX_EMP=HALL==='AUTO'?1:10,SECTION_PREFIX='__CG_SECTION__:';
