@@ -601,6 +601,7 @@ th{background:#f6f8f9}
 /* FINAL v53: prostszy opis Ilość i czas + zawsze widoczny Zapisz na telefonie */
 /* FINAL v54: tylko aktywny przycisk Ilość/Czas jest pomarańczowy */
 /* FINAL v55: statystyki Podsumowanie / Wydajność / Udziały */
+/* FINAL v56: wspólne wstrzymanie/wznowienie centrali + oceny sortują się od razu */
 .groupbadge{display:flex;align-items:center;min-height:39px;padding:9px 11px;border:1px solid #e6c66f;border-radius:9px;background:#fff7d8;color:#60470d;font-weight:800}
 .groupassign{display:grid;grid-template-columns:minmax(180px,1fr) 130px;gap:10px;align-items:center;padding:7px 0;border-bottom:1px solid var(--line)}
 .groupassign:last-child{border-bottom:0}
@@ -1173,6 +1174,49 @@ th{background:#f6f8f9}
 }
 .statillustration.participation path{stroke:#d77d18}
 
+
+/* FINAL v56: wspólne wstrzymanie centrali + dynamiczny ranking ocen */
+.centralpausebox{
+  margin:0 0 16px;
+  padding:12px;
+  border:1px solid #e3e7ea;
+  border-radius:12px;
+  background:#fff8ee;
+}
+.centralpausehead{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:9px;
+}
+.centralpausehead b{font-size:14px}
+#centralPauseStatus{font-size:12px;margin-top:2px}
+.centralpausebuttons{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+}
+.centralpause-stop{
+  border-color:#d98622 !important;
+  color:#8b4d08 !important;
+  background:#fff0da !important;
+}
+.centralpause-resume{
+  border-color:#cfd7dd !important;
+  background:#eef2f4 !important;
+}
+@media(max-width:620px){
+  .centralpausebuttons{grid-template-columns:1fr}
+  .centralpausebuttons .btn{width:100%;min-height:46px}
+}
+#ratings tbody tr{
+  transition:background .15s ease;
+}
+#ratings tbody tr:first-child td{
+  background:#fff8e8;
+}
+
 </style></head><body>
 <div id="login" class="login"><div class="box"><button type="button" class="btn secondary" onclick="location.href='./index.html'" style="width:100%;margin:0 0 14px">← Wróć do wyboru działu</button><div class="brand"><span class="brandmark" aria-hidden="true"><i></i><i></i><i></i></span><span class="brandtext"><span class="clima">Clima</span><span class="gold">Gold</span></span></div><h2>Elektrycy H1</h2><div class="hint">Wspólna baza online</div><div class="field"><label>Login</label><input id="lu" value="brygadzista" autocomplete="username"></div><div class="field"><label>Hasło</label><input id="lp" type="password" autocomplete="current-password"></div><button class="btn" onclick="doLogin()">Zaloguj</button><div id="le" class="error"></div></div></div>
 <div id="app" class="app"><aside class="side"><div class="brand"><span class="brandmark" aria-hidden="true"><i></i><i></i><i></i></span><span class="brandtext"><span class="clima">Clima</span><span class="gold">Gold</span></span></div><span class="hall">ELEKTRYCY H1</span><div class="nav">
@@ -1332,7 +1376,7 @@ th{background:#f6f8f9}
       <div>
         <div class="statcategoryeyebrow">WYDAJNOŚĆ</div>
         <h3>Ile zrobił i jaki miał średni czas</h3>
-        <p>Jedna tabela pokazuje liczbę pełnych sztuk oraz średni czas wykonania. Bez punktów i sztucznych przeliczników.</p>
+        <p>Jedna tabela pokazuje liczbę pełnych sztuk oraz średni czas wykonania.</p>
       </div>
       <div class="statillustration qty" aria-hidden="true">
         <svg viewBox="0 0 180 110">
@@ -1463,7 +1507,18 @@ th{background:#f6f8f9}
 </section>
 <section id="users" class="view"><div class="card"><h3>Nowe konto</h3><div class="grid"><div class="field"><label>Login</label><input id="nu"></div><div class="field"><label>Hasło</label><input id="np" type="password"></div><div class="field"><label>Rola</label><select id="nr"><option value="supervisor">Przełożony</option><option value="viewer">Tylko podgląd</option><option value="admin">Administrator</option></select></div></div><button class="btn" onclick="addUser()">Dodaj konto</button></div><div class="card" style="margin-top:14px"><div id="ul"></div></div></section>
 </main></div>
-<div id="modal" class="modal"><div class="dialog"><h2>Wpis ewidencji</h2><input id="eid" type="hidden"><div class="quickwork"><button type="button" class="btn" onclick="quickStartWork()"><span class="qicon play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5.2v13.6c0 .9 1 1.4 1.7.9l9.6-6.8c.7-.5.7-1.5 0-2L9.7 4.1C9 3.6 8 4.1 8 5.2Z"/></svg></span><span>START PRACY</span></button><button type="button" class="btn secondary" onclick="quickEndWork()"><span class="qicon stop" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="1.8"/></svg></span><span>KONIEC PRACY</span></button></div><div class="grid"><div class="field"><label>Nr / oznaczenie</label><input id="no"></div><div class="field"><label>Data rozpoczęcia</label><input id="sd" type="date"></div><div class="field"><label>Data zakończenia</label><input id="ed" type="date"></div><div class="field"><label>Typ urządzenia</label><select id="dt" onchange="updateSectionVisibility()"></select></div><div class="field"><label>Godzina rozpoczęcia</label><input id="stt" type="time"></div><div class="field"><label>Godzina zakończenia</label><input id="ett" type="time"></div></div><div class="field" id="sectionField" style="display:none"><label>Sekcja centrali dzielonej</label><select id="section"></select></div><h3>Pracownicy, system pracy i korekty czasu</h3><div class="muted">Każdy pracownik ma własny system pracy na każdy dzień wpisu.</div><div id="empsel"></div><div class="toolbar empaddbar"><button id="addEmpBtn" type="button" class="btn" onclick="addEmployeeBlock()">+ Dodaj pracownika</button></div><div class="grid"><div class="field"><label>Kolor</label><select id="markcolor"><option value="">Bez koloru</option><option value="yellow">Żółty</option><option value="green">Zielony</option><option value="blue">Niebieski</option><option value="red">Czerwony</option><option value="orange">Pomarańczowy</option><option value="purple">Fioletowy</option></select></div><div class="field" style="grid-column:span 2"><label>Uwagi</label><textarea id="notes"></textarea></div></div><div class="entryactions"><button class="btn entrysavebtn" onclick="saveEntry()">Zapisz</button><button class="btn secondary entrycancelbtn" onclick="closeEntry()">Anuluj</button></div></div></div>
+<div id="modal" class="modal"><div class="dialog"><h2>Wpis ewidencji</h2><input id="eid" type="hidden"><div class="quickwork"><button type="button" class="btn" onclick="quickStartWork()"><span class="qicon play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5.2v13.6c0 .9 1 1.4 1.7.9l9.6-6.8c.7-.5.7-1.5 0-2L9.7 4.1C9 3.6 8 4.1 8 5.2Z"/></svg></span><span>START PRACY</span></button><button type="button" class="btn secondary" onclick="quickEndWork()"><span class="qicon stop" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="1.8"/></svg></span><span>KONIEC PRACY</span></button></div><div class="centralpausebox">
+  <div class="centralpausehead">
+    <div>
+      <b>Wstrzymanie całej centrali</b>
+      <div id="centralPauseStatus" class="muted">Centrala pracuje.</div>
+    </div>
+  </div>
+  <div class="centralpausebuttons">
+    <button type="button" class="btn secondary centralpause-stop" onclick="pauseAllWork()">Wstrzymaj centralę — wszyscy</button>
+    <button type="button" class="btn secondary centralpause-resume" onclick="resumeAllWork()">Wznów centralę — wszyscy</button>
+  </div>
+</div><div class="grid"><div class="field"><label>Nr / oznaczenie</label><input id="no"></div><div class="field"><label>Data rozpoczęcia</label><input id="sd" type="date"></div><div class="field"><label>Data zakończenia</label><input id="ed" type="date"></div><div class="field"><label>Typ urządzenia</label><select id="dt" onchange="updateSectionVisibility()"></select></div><div class="field"><label>Godzina rozpoczęcia</label><input id="stt" type="time"></div><div class="field"><label>Godzina zakończenia</label><input id="ett" type="time"></div></div><div class="field" id="sectionField" style="display:none"><label>Sekcja centrali dzielonej</label><select id="section"></select></div><h3>Pracownicy, system pracy i korekty czasu</h3><div class="muted">Każdy pracownik ma własny system pracy na każdy dzień wpisu.</div><div id="empsel"></div><div class="toolbar empaddbar"><button id="addEmpBtn" type="button" class="btn" onclick="addEmployeeBlock()">+ Dodaj pracownika</button></div><div class="grid"><div class="field"><label>Kolor</label><select id="markcolor"><option value="">Bez koloru</option><option value="yellow">Żółty</option><option value="green">Zielony</option><option value="blue">Niebieski</option><option value="red">Czerwony</option><option value="orange">Pomarańczowy</option><option value="purple">Fioletowy</option></select></div><div class="field" style="grid-column:span 2"><label>Uwagi</label><textarea id="notes"></textarea></div></div><div class="entryactions"><button class="btn entrysavebtn" onclick="saveEntry()">Zapisz</button><button class="btn secondary entrycancelbtn" onclick="closeEntry()">Anuluj</button></div></div></div>
 <script>
 
 var HALL='H1',D=null,ME=null,TOKEN_KEY='cg_'+HALL+'_token',DEFAULT_EMP=HALL==='AUTO'?1:2,MAX_EMP=HALL==='AUTO'?1:10,SECTION_PREFIX='__CG_SECTION__:';
@@ -1563,7 +1618,7 @@ function addEmployeeBlock(){
 }
 function removeEmployeeBlock(btn){
   var block=btn.closest('.empblock');if(block)block.remove();
-  renumberEmployeeBlocks()
+  renumberEmployeeBlocks();updateCentralPauseStatus()
 }
 
 
@@ -2233,6 +2288,65 @@ function restoreParticipationControls(existing){
   })
 }
 
+
+function selectedEmployeeBlocks(){
+  return[].slice.call(document.querySelectorAll('.empblock')).filter(function(block){
+    var s=block.querySelector('.emp');
+    return s&&String(s.value||'').trim()
+  })
+}
+function blockOpenPause(block){
+  var p=collectPauses(block);
+  for(var i=p.length-1;i>=0;i--){
+    if(p[i].from_date&&p[i].from_time&&!(p[i].to_date&&p[i].to_time))return p[i]
+  }
+  return null
+}
+function updateCentralPauseStatus(){
+  var el=$('centralPauseStatus');if(!el)return;
+  var blocks=selectedEmployeeBlocks();
+  if(!blocks.length){el.textContent='Wybierz pracowników.';return}
+  var paused=blocks.filter(function(block){return !!blockOpenPause(block)}).length;
+  if(paused===blocks.length)el.textContent='Centrala wstrzymana — wszyscy pracownicy.';
+  else if(paused>0)el.textContent='Wstrzymanie indywidualne: '+paused+' z '+blocks.length+' pracowników.';
+  else el.textContent='Centrala pracuje.'
+}
+function pauseAllWork(){
+  var blocks=selectedEmployeeBlocks();
+  if(!blocks.length){alert('Najpierw wybierz pracowników.');return}
+  var d=pauseNowDate(),tm=pauseNowTime(),changed=0;
+  blocks.forEach(function(block){
+    var p=collectPauses(block);
+    var open=p.some(function(x){return x.from_date&&x.from_time&&!(x.to_date&&x.to_time)});
+    if(!open){
+      p.push({from_date:d,from_time:tm,to_date:'',to_time:''});
+      renderPauseControls(block,p);
+      changed++
+    }
+  });
+  updateCentralPauseStatus();
+  if(!changed)alert('Centrala jest już wstrzymana u wszystkich pracowników.')
+}
+function resumeAllWork(){
+  var blocks=selectedEmployeeBlocks();
+  if(!blocks.length){alert('Najpierw wybierz pracowników.');return}
+  var d=pauseNowDate(),tm=pauseNowTime(),changed=0;
+  blocks.forEach(function(block){
+    var p=collectPauses(block),i;
+    for(i=p.length-1;i>=0;i--){
+      if(p[i].from_date&&p[i].from_time&&!(p[i].to_date&&p[i].to_time))break
+    }
+    if(i>=0){
+      p[i].to_date=d;
+      p[i].to_time=tm;
+      renderPauseControls(block,p);
+      changed++
+    }
+  });
+  updateCentralPauseStatus();
+  if(!changed)alert('Żaden z pracowników nie ma obecnie wstrzymanej pracy.')
+}
+
 function collectPauses(block){
   return[].slice.call(block.querySelectorAll('.pauserow')).map(function(r){return{from_date:r.querySelector('.pausefromd').value,from_time:r.querySelector('.pausefromt').value,to_date:r.querySelector('.pausetod').value,to_time:r.querySelector('.pausetot').value}}).filter(function(p){return p.from_date||p.from_time||p.to_date||p.to_time})
 }
@@ -2241,7 +2355,8 @@ function pauseNowTime(){var n=new Date();return String(n.getHours()).padStart(2,
 function updatePauseStatus(block){
   var p=collectPauses(block),open=p.find(function(x){return x.from_date&&x.from_time&&!(x.to_date&&x.to_time)}),mins=0;
   p.forEach(function(x){if(x.from_date&&x.from_time&&x.to_date&&x.to_time){var a=new Date(x.from_date+'T'+x.from_time),b=new Date(x.to_date+'T'+x.to_time);if(b>a)mins+=(b-a)/60000}});
-  block.querySelector('.pausestatus').textContent=open?'Wstrzymana od '+open.from_date+' '+open.from_time:(p.length?'Przerwy: '+p.length+' · '+fmt(mins):'Brak przerw.')
+  block.querySelector('.pausestatus').textContent=open?'Wstrzymana od '+open.from_date+' '+open.from_time:(p.length?'Przerwy: '+p.length+' · '+fmt(mins):'Brak przerw.');
+  updateCentralPauseStatus()
 }
 function renderPauseControls(block,pauses){
   var box=block.querySelector('.pauselist');pauses=Array.isArray(pauses)?pauses:[];
@@ -2291,7 +2406,7 @@ function openEntry(id){
   var count=HALL==='AUTO'?1:Math.min(MAX_EMP,Math.max(DEFAULT_EMP,(e.employees||[]).length,es.length));
   $('empsel').innerHTML=Array.from({length:count},function(_,i){return employeeBlockHtml(i,e,cs)}).join('');
   restoreParticipationControls(es);renderAllEmpDayBoxes(es);restoreBreakGroups(es);restorePauseControls(es);renumberEmployeeBlocks();
-  $('sd').onchange=refreshEmpDays;$('ed').onchange=refreshEmpDays;$('modal').classList.add('open')
+  $('sd').onchange=refreshEmpDays;$('ed').onchange=refreshEmpDays;$('modal').classList.add('open');updateCentralPauseStatus()
 }
 function quickNowParts(){var d=new Date();return{date:localDate(d),time:String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')}}
 function quickStartWork(){var n=quickNowParts();$('sd').value=n.date;$('stt').value=n.time;if(!$('ed').value)$('ed').value='';if(!$('ett').value)$('ett').value='';refreshEmpDays()}
@@ -2494,7 +2609,43 @@ function exportStatsXLS(){
 }
 function scoreRating(r){var a=[r.knowledge,r.efficiency,r.accuracy,r.quality];if(a.some(function(v){return!v||v==='-'}))return null;return a.reduce(function(s,v){return s+(parseInt(v)||0)},0)}
 function ratingOpts(v){return['-','1/5','2/5','3/5','4/5','5/5'].map(function(x){return'<option'+(x===v?' selected':'')+'>'+x+'</option>'}).join('')}
-function renderRatings(){var saved={};(D.ratings||[]).forEach(function(r){saved[r.employee]=r});var rows=D.settings.employees.map(function(n){return saved[n]||{employee:n,knowledge:'-',efficiency:'-',accuracy:'-',quality:'-'}}),scores=[].concat(rows.map(scoreRating).filter(function(x){return x!==null})).filter(function(v,i,a){return a.indexOf(v)===i}).sort(function(a,b){return b-a});$('rt').innerHTML=rows.map(function(r){var sc=scoreRating(r),pl=sc===null?'—':scores.indexOf(sc)+1;return'<tr data-emp="'+esc(r.employee)+'"><td><b>'+pl+'</b></td><td><b>'+esc(r.employee)+'</b></td>'+['knowledge','efficiency','accuracy','quality'].map(function(k){return'<td><select class="rating" data-k="'+k+'">'+ratingOpts(r[k]||'-')+'</select></td>'}).join('')+'<td><b>'+(sc===null?'—':sc+'/20')+'</b></td></tr>'}).join('');if(ME.role==='viewer'){document.querySelectorAll('.rating').forEach(function(x){x.disabled=true});$('saveratings').style.display='none'}}
+function ratingPlaceMap(rows){
+  var vals=rows.map(scoreRating).filter(function(x){return x!==null}).filter(function(v,i,a){return a.indexOf(v)===i}).sort(function(a,b){return b-a});
+  var out={};
+  rows.forEach(function(r){var sc=scoreRating(r);out[r.employee]=sc===null?null:vals.indexOf(sc)+1});
+  return out
+}
+function renderRatings(overrideRows){
+  var saved={};
+  ((overrideRows&&overrideRows.length)?overrideRows:(D.ratings||[])).forEach(function(r){saved[r.employee]=r});
+  var rows=(D.settings.employees||[]).map(function(n){
+    return saved[n]||{employee:n,knowledge:'-',efficiency:'-',accuracy:'-',quality:'-'}
+  });
+  var places=ratingPlaceMap(rows);
+  rows.sort(function(a,b){
+    var sa=scoreRating(a),sb=scoreRating(b);
+    if(sa===null&&sb===null)return a.employee.localeCompare(b.employee,'pl');
+    if(sa===null)return 1;
+    if(sb===null)return-1;
+    return sb-sa||a.employee.localeCompare(b.employee,'pl')
+  });
+  $('rt').innerHTML=rows.map(function(r){
+    var sc=scoreRating(r),pl=places[r.employee]===null?'—':places[r.employee];
+    return'<tr data-emp="'+esc(r.employee)+'"><td><b>'+pl+'</b></td><td><b>'+esc(r.employee)+'</b></td>'+
+      ['knowledge','efficiency','accuracy','quality'].map(function(k){
+        return'<td><select class="rating" data-k="'+k+'" onchange="ratingChanged()">'+ratingOpts(r[k]||'-')+'</select></td>'
+      }).join('')+
+      '<td><b>'+(sc===null?'—':sc+'/20')+'</b></td></tr>'
+  }).join('');
+  if(ME.role==='viewer'){
+    document.querySelectorAll('.rating').forEach(function(x){x.disabled=true});
+    $('saveratings').style.display='none'
+  }else if($('saveratings'))$('saveratings').style.display=''
+}
+function ratingChanged(){
+  var rows=collectRatings();
+  renderRatings(rows)
+}
 function collectRatings(){return[].slice.call($('rt').querySelectorAll('tr')).map(function(tr){var r={employee:tr.dataset.emp};tr.querySelectorAll('.rating').forEach(function(s){r[s.dataset.k]=s.value});return r})}
 async function saveRatings(){await api('/api/ratings',{method:'POST',body:JSON.stringify({ratings:collectRatings()})});D=await api('/api/data');renderRatings();alert('Oceny zapisane')}
 function syncSettingInputs(){document.querySelectorAll('#settings [data-k][data-i]').forEach(function(x){if(D.settings[x.dataset.k])D.settings[x.dataset.k][+x.dataset.i]=x.value});syncSystemBreakInputs();syncEmployeeBreakGroupInputs();syncSectionsIntoTypes()}
