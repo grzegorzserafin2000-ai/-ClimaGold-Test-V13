@@ -1223,6 +1223,9 @@ th{background:#f6f8f9}
 .login .box{position:relative;z-index:1;box-shadow:0 18px 48px rgba(0,0,0,.32)}
 .brand-logo{display:block;width:220px;height:auto;max-width:100%;object-fit:contain}
 .side .brand-logo{width:100%;height:auto}
+
+/* ClimaGold: pomarańczowe ozdoby także w szarym tle aplikacji */
+.app{background-color:var(--bg);background-image:url('./climagold-bg.svg');background-position:center top;background-repeat:no-repeat;background-size:cover;background-attachment:fixed}
 </style></head><body>
 <div id="login" class="login"><div class="box"><button type="button" class="btn secondary" onclick="location.href='./index.html'" style="width:100%;margin:0 0 14px">← Wróć do wyboru działu</button><div class="brand"><img class="brand-logo" src="./climagold-logo.svg" alt="ClimaGold"></div><h2>Elektrycy H2</h2><div class="hint">Wspólna baza online</div><div class="field"><label>Login</label><input id="lu" value="brygadzista" autocomplete="username"></div><div class="field"><label>Hasło</label><input id="lp" type="password" autocomplete="current-password"></div><button class="btn" onclick="doLogin()">Zaloguj</button><div id="le" class="error"></div></div></div>
 <div id="app" class="app"><aside class="side"><div class="brand"><img class="brand-logo" src="./climagold-logo.svg" alt="ClimaGold"></div><span class="hall">ELEKTRYCY H2</span><div class="nav">
