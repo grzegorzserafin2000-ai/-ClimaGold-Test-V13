@@ -1217,9 +1217,15 @@ th{background:#f6f8f9}
   background:#fff8e8;
 }
 
+
+/* ClimaGold: oryginalne logo i pomarańczowe motywy tła */
+.login{background-color:#1d2832;background-image:url('./climagold-bg.svg');background-position:center;background-repeat:no-repeat;background-size:cover}
+.login .box{position:relative;z-index:1;box-shadow:0 18px 48px rgba(0,0,0,.32)}
+.brand-logo{display:block;width:220px;height:auto;max-width:100%;object-fit:contain}
+.side .brand-logo{width:100%;height:auto}
 </style></head><body>
-<div id="login" class="login"><div class="box"><button type="button" class="btn secondary" onclick="location.href='./index.html'" style="width:100%;margin:0 0 14px">← Wróć do wyboru działu</button><div class="brand"><span class="brandmark" aria-hidden="true"><i></i><i></i><i></i></span><span class="brandtext"><span class="clima">Clima</span><span class="gold">Gold</span></span></div><h2>Elektrycy H2</h2><div class="hint">Wspólna baza online</div><div class="field"><label>Login</label><input id="lu" value="brygadzista" autocomplete="username"></div><div class="field"><label>Hasło</label><input id="lp" type="password" autocomplete="current-password"></div><button class="btn" onclick="doLogin()">Zaloguj</button><div id="le" class="error"></div></div></div>
-<div id="app" class="app"><aside class="side"><div class="brand"><span class="brandmark" aria-hidden="true"><i></i><i></i><i></i></span><span class="brandtext"><span class="clima">Clima</span><span class="gold">Gold</span></span></div><span class="hall">ELEKTRYCY H2</span><div class="nav">
+<div id="login" class="login"><div class="box"><button type="button" class="btn secondary" onclick="location.href='./index.html'" style="width:100%;margin:0 0 14px">← Wróć do wyboru działu</button><div class="brand"><img class="brand-logo" src="./climagold-logo.svg" alt="ClimaGold"></div><h2>Elektrycy H2</h2><div class="hint">Wspólna baza online</div><div class="field"><label>Login</label><input id="lu" value="brygadzista" autocomplete="username"></div><div class="field"><label>Hasło</label><input id="lp" type="password" autocomplete="current-password"></div><button class="btn" onclick="doLogin()">Zaloguj</button><div id="le" class="error"></div></div></div>
+<div id="app" class="app"><aside class="side"><div class="brand"><img class="brand-logo" src="./climagold-logo.svg" alt="ClimaGold"></div><span class="hall">ELEKTRYCY H2</span><div class="nav">
   <button class="active" data-v="dashboard"><span class="navsvg"><svg viewBox="0 0 24 24"><path d="M3 11 12 3l9 8v10h-6v-6H9v6H3V11Z"/></svg></span><span>Dashboard</span></button>
   <button data-v="entries"><span class="navsvg"><svg viewBox="0 0 24 24"><path d="M6 2h12v3h3v17H3V5h3V2Zm2 3h8V4H8v1Zm-2 4v10h12V9H6Z"/></svg></span><span>Ewidencja</span></button>
   <button data-v="stats"><span class="navsvg"><svg viewBox="0 0 24 24"><path d="M4 20h3V10H4v10Zm6 0h4V4h-4v16Zm7 0h3V7h-3v13Z"/></svg></span><span>Statystyki</span></button>
