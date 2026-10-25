@@ -108,17 +108,18 @@ body{
   .tile{grid-template-columns:52px 1fr 52px;font-size:16px;min-height:64px}
   .tile .icon{width:34px;height:34px}
 }
+</style>
 
-/* ClimaGold: oryginalne logo i pomarańczowe motywy tła */
-body{background-color:var(--bg);background-image:url('./climagold-bg.svg');background-position:center;background-size:cover;background-repeat:no-repeat;background-attachment:fixed}
-.brand-logo{display:block;width:220px;height:auto;max-width:100%;object-fit:contain}
+<style id="climagold-brand-refresh">
+body{background-color:#202c38;background-image:url("./climagold-bg.svg");background-position:center;background-repeat:no-repeat;background-size:cover;background-attachment:fixed}
+.climagold-logo{display:block;width:min(100%,218px);height:auto;object-fit:contain}
+.box .brand{min-height:34px}
+@media(max-width:800px){body{background-attachment:scroll}}
 </style>
 </head>
 <body>
 <main class="box">
-  <div class="brand">
-    <img class="brand-logo" src="./climagold-logo.svg" alt="ClimaGold">
-  </div>
+  <div class="brand"><img class="climagold-logo" src="./climagold-logo.svg" alt="ClimaGold"></div>
 
   <div class="muted">Ewidencja pracy online</div>
 
